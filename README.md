@@ -161,7 +161,7 @@ TaskManagementSystem/
 
 ### Persistencia de Datos
 - Guardado automático cada 5 minutos
-- Formato JSON para fácil lectura
+- Formato TXT para fácil lectura
 - Backup automático antes de sobrescribir
 
 ## Autor
