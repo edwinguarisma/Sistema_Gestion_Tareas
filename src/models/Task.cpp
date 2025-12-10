@@ -3,18 +3,20 @@
 #include <algorithm>
 #include <ctime>
 
+using namespace std;
+
 // Constructores
 Task::Task() 
     : id(-1), title(""), description(""), state("Pendiente"),
       assignedUserId(-1), priority(3),
-      createdDate(std::chrono::system_clock::now()),
-      activityLog(std::make_shared<ActivityLog>()) {}
+      createdDate(chrono::system_clock::now()),
+      activityLog(make_shared<ActivityLog>()) {}
 
-Task::Task(int id, const std::string& title, const std::string& description)
+Task::Task(int id, const string& title, const string& description)
     : id(id), title(title), description(description), state("Pendiente"),
       assignedUserId(-1), priority(3),
-      createdDate(std::chrono::system_clock::now()),
-      activityLog(std::make_shared<ActivityLog>()) {}
+      createdDate(chrono::system_clock::now()),
+      activityLog(make_shared<ActivityLog>()) {}
 
 // Destructor
 Task::~Task() {}
@@ -24,15 +26,15 @@ int Task::getId() const {
     return id;
 }
 
-std::string Task::getTitle() const {
+string Task::getTitle() const {
     return title;
 }
 
-std::string Task::getDescription() const {
+string Task::getDescription() const {
     return description;
 }
 
-std::string Task::getState() const {
+string Task::getState() const {
     return state;
 }
 
@@ -40,11 +42,11 @@ int Task::getAssignedUserId() const {
     return assignedUserId;
 }
 
-std::chrono::system_clock::time_point Task::getDueDate() const {
+chrono::system_clock::time_point Task::getDueDate() const {
     return dueDate;
 }
 
-std::chrono::system_clock::time_point Task::getCreatedDate() const {
+chrono::system_clock::time_point Task::getCreatedDate() const {
     return createdDate;
 }
 
@@ -52,26 +54,26 @@ int Task::getPriority() const {
     return priority;
 }
 
-const std::vector<std::shared_ptr<Subtask>>& Task::getSubtasks() const {
+const vector<shared_ptr<Subtask>>& Task::getSubtasks() const {
     return subtasks;
 }
 
-const std::set<int>& Task::getDependencies() const {
+const set<int>& Task::getDependencies() const {
     return dependencies;
 }
 
-const std::vector<std::string>& Task::getTags() const {
+const vector<string>& Task::getTags() const {
     return tags;
 }
 
-std::shared_ptr<ActivityLog> Task::getActivityLog() const {
+shared_ptr<ActivityLog> Task::getActivityLog() const {
     return activityLog;
 }
 
 // Setters
-void Task::setTitle(const std::string& newTitle, const std::string& modifiedBy) {
+void Task::setTitle(const string& newTitle, const string& modifiedBy) {
     if (newTitle != this->title) {
-        std::string oldTitle = this->title;
+        string oldTitle = this->title;
         this->title = newTitle;
         
         // Registrar cambio
@@ -82,9 +84,9 @@ void Task::setTitle(const std::string& newTitle, const std::string& modifiedBy) 
     }
 }
 
-void Task::setDescription(const std::string& newDescription, const std::string& modifiedBy) {
+void Task::setDescription(const string& newDescription, const string& modifiedBy) {
     if (newDescription != this->description) {
-        std::string oldDescription = this->description;
+        string oldDescription = this->description;
         this->description = newDescription;
         
         // Registrar cambio
@@ -97,9 +99,9 @@ void Task::setDescription(const std::string& newDescription, const std::string& 
     }
 }
 
-void Task::setState(const std::string& newState, const std::string& modifiedBy) {
+void Task::setState(const string& newState, const string& modifiedBy) {
     if (newState != this->state) {
-        std::string oldState = this->state;
+        string oldState = this->state;
         this->state = newState;
         
         // Registrar movimiento
@@ -110,16 +112,16 @@ void Task::setState(const std::string& newState, const std::string& modifiedBy) 
     }
 }
 
-void Task::setAssignedUserId(int userId, const std::string& modifiedBy) {
+void Task::setAssignedUserId(int userId, const string& modifiedBy) {
     if (userId != this->assignedUserId) {
         this->assignedUserId = userId;
         
         // Registrar asignación
-        activityLog->logAssignment(modifiedBy, "Usuario ID: " + std::to_string(userId));
+        activityLog->logAssignment(modifiedBy, "Usuario ID: " + to_string(userId));
     }
 }
 
-void Task::setDueDate(const std::chrono::system_clock::time_point& date) {
+void Task::setDueDate(const chrono::system_clock::time_point& date) {
     this->dueDate = date;
 }
 
@@ -130,7 +132,7 @@ void Task::setPriority(int priority) {
 }
 
 // Gestión de subtareas
-void Task::addSubtask(std::shared_ptr<Subtask> subtask) {
+void Task::addSubtask(shared_ptr<Subtask> subtask) {
     if (subtask) {
         subtasks.push_back(subtask);
     }
@@ -138,15 +140,15 @@ void Task::addSubtask(std::shared_ptr<Subtask> subtask) {
 
 void Task::removeSubtask(int subtaskId) {
     subtasks.erase(
-        std::remove_if(subtasks.begin(), subtasks.end(),
-            [subtaskId](const std::shared_ptr<Subtask>& st) {
+        remove_if(subtasks.begin(), subtasks.end(),
+            [subtaskId](const shared_ptr<Subtask>& st) {
                 return st->getId() == subtaskId;
             }),
         subtasks.end()
     );
 }
 
-std::shared_ptr<Subtask> Task::findSubtaskById(int id) {
+shared_ptr<Subtask> Task::findSubtaskById(int id) {
     for (auto& subtask : subtasks) {
         auto found = subtask->findSubtaskById(id);
         if (found) {
@@ -190,24 +192,24 @@ bool Task::hasDependencies() const {
 }
 
 // Gestión de tags
-void Task::addTag(const std::string& tag) {
-    if (std::find(tags.begin(), tags.end(), tag) == tags.end()) {
+void Task::addTag(const string& tag) {
+    if (find(tags.begin(), tags.end(), tag) == tags.end()) {
         tags.push_back(tag);
     }
 }
 
-void Task::removeTag(const std::string& tag) {
-    tags.erase(std::remove(tags.begin(), tags.end(), tag), tags.end());
+void Task::removeTag(const string& tag) {
+    tags.erase(remove(tags.begin(), tags.end(), tag), tags.end());
 }
 
-bool Task::hasTag(const std::string& tag) const {
-    return std::find(tags.begin(), tags.end(), tag) != tags.end();
+bool Task::hasTag(const string& tag) const {
+    return find(tags.begin(), tags.end(), tag) != tags.end();
 }
 
 // Patrón Memento - Control de versiones
-std::shared_ptr<TaskMemento> Task::createMemento(const std::string& modifiedBy) {
+shared_ptr<TaskMemento> Task::createMemento(const string& modifiedBy) {
     // Usar constructor directo en lugar de make_shared porque el constructor es privado
-    std::shared_ptr<TaskMemento> memento(new TaskMemento(title, description, state, 
+    shared_ptr<TaskMemento> memento(new TaskMemento(title, description, state, 
                                                           assignedUserId, modifiedBy));
     history.push_back(memento);
     
@@ -219,7 +221,7 @@ std::shared_ptr<TaskMemento> Task::createMemento(const std::string& modifiedBy) 
     return memento;
 }
 
-void Task::restoreFromMemento(std::shared_ptr<TaskMemento> memento) {
+void Task::restoreFromMemento(shared_ptr<TaskMemento> memento) {
     if (memento) {
         this->title = memento->getTitle();
         this->description = memento->getDescription();
@@ -231,7 +233,7 @@ void Task::restoreFromMemento(std::shared_ptr<TaskMemento> memento) {
     }
 }
 
-const std::vector<std::shared_ptr<TaskMemento>>& Task::getHistory() const {
+const vector<shared_ptr<TaskMemento>>& Task::getHistory() const {
     return history;
 }
 
@@ -243,19 +245,19 @@ bool Task::canStart() const {
 }
 
 bool Task::isOverdue() const {
-    auto now = std::chrono::system_clock::now();
+    auto now = chrono::system_clock::now();
     return dueDate < now && state != "Terminado";
 }
 
 int Task::getDaysUntilDue() const {
-    auto now = std::chrono::system_clock::now();
-    auto diff = std::chrono::duration_cast<std::chrono::hours>(dueDate - now);
+    auto now = chrono::system_clock::now();
+    auto diff = chrono::duration_cast<chrono::hours>(dueDate - now);
     return diff.count() / 24;
 }
 
 // Métodos de utilidad
-std::string Task::toString() const {
-    std::stringstream ss;
+string Task::toString() const {
+    stringstream ss;
     ss << "Task[ID: " << id << ", Title: " << title 
        << ", State: " << state << ", Priority: " << priority;
     

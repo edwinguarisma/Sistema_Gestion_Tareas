@@ -14,6 +14,8 @@
 #include <memory>
 #include "models/Task.h"
 
+using namespace std;
+
 /**
  * @brief Widget que representa una tarjeta de tarea
  * Implementa drag and drop para mover tareas
@@ -22,7 +24,7 @@ class TaskCard : public QWidget {
     Q_OBJECT
 
 private:
-    std::shared_ptr<Task> task;
+    shared_ptr<Task> task;
     
     QVBoxLayout* layout;
     QLabel* titleLabel;
@@ -62,11 +64,11 @@ signals:
     void dropped(int taskId, const QString& targetState);
 
 public:
-    explicit TaskCard(std::shared_ptr<Task> task, QWidget *parent = nullptr);
+    explicit TaskCard(shared_ptr<Task> task, QWidget *parent = nullptr);
     ~TaskCard();
     
-    std::shared_ptr<Task> getTask() const;
-    void updateTask(std::shared_ptr<Task> task);
+    shared_ptr<Task> getTask() const;
+    void updateTask(shared_ptr<Task> task);
     void setHighlighted(bool highlighted);
 };
 

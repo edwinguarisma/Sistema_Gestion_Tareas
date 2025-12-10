@@ -2,6 +2,8 @@
 #include <sstream>
 #include <algorithm>
 
+using namespace std;
+
 // Constructores
 Board::Board() 
     : id(-1), name(""), description(""), nextTaskId(1) {
@@ -10,18 +12,18 @@ Board::Board()
     
     // Inicializar mapas de tareas
     for (const auto& state : states) {
-        tasksByState[state] = std::vector<std::shared_ptr<Task>>();
+        tasksByState[state] = vector<shared_ptr<Task>>();
     }
 }
 
-Board::Board(int id, const std::string& name, const std::string& description)
+Board::Board(int id, const string& name, const string& description)
     : id(id), name(name), description(description), nextTaskId(1) {
     // Estados predeterminados
     states = {"Pendiente", "En Progreso", "Terminado"};
     
     // Inicializar mapas de tareas
     for (const auto& state : states) {
-        tasksByState[state] = std::vector<std::shared_ptr<Task>>();
+        tasksByState[state] = vector<shared_ptr<Task>>();
     }
 }
 
@@ -33,44 +35,44 @@ int Board::getId() const {
     return id;
 }
 
-std::string Board::getName() const {
+string Board::getName() const {
     return name;
 }
 
-std::string Board::getDescription() const {
+string Board::getDescription() const {
     return description;
 }
 
-const std::vector<std::string>& Board::getStates() const {
+const vector<string>& Board::getStates() const {
     return states;
 }
 
 // Setters
-void Board::setName(const std::string& name) {
+void Board::setName(const string& name) {
     this->name = name;
 }
 
-void Board::setDescription(const std::string& description) {
+void Board::setDescription(const string& description) {
     this->description = description;
 }
 
 // Gestión de estados
-void Board::addState(const std::string& state) {
+void Board::addState(const string& state) {
     if (!hasState(state)) {
         states.push_back(state);
-        tasksByState[state] = std::vector<std::shared_ptr<Task>>();
+        tasksByState[state] = vector<shared_ptr<Task>>();
     }
 }
 
-void Board::removeState(const std::string& state) {
+void Board::removeState(const string& state) {
     // No permitir eliminar si tiene tareas
     if (tasksByState[state].empty()) {
-        states.erase(std::remove(states.begin(), states.end(), state), states.end());
+        states.erase(remove(states.begin(), states.end(), state), states.end());
         tasksByState.erase(state);
     }
 }
 
-void Board::reorderStates(const std::vector<std::string>& newOrder) {
+void Board::reorderStates(const vector<string>& newOrder) {
     // Validar que todos los estados existan
     for (const auto& state : newOrder) {
         if (!hasState(state)) {
@@ -80,18 +82,18 @@ void Board::reorderStates(const std::vector<std::string>& newOrder) {
     states = newOrder;
 }
 
-bool Board::hasState(const std::string& state) const {
-    return std::find(states.begin(), states.end(), state) != states.end();
+bool Board::hasState(const string& state) const {
+    return find(states.begin(), states.end(), state) != states.end();
 }
 
 // Gestión de tareas
-std::shared_ptr<Task> Board::createTask(const std::string& title, 
-                                         const std::string& description,
-                                         const std::string& initialState) {
-    auto task = std::make_shared<Task>(nextTaskId++, title, description);
+shared_ptr<Task> Board::createTask(const string& title, 
+                                         const string& description,
+                                         const string& initialState) {
+    auto task = make_shared<Task>(nextTaskId++, title, description);
     
     // Verificar que el estado inicial existe
-    std::string state = hasState(initialState) ? initialState : states[0];
+    string state = hasState(initialState) ? initialState : states[0];
     task->setState(state, "Sistema");
     
     addTask(task, state);
@@ -99,7 +101,7 @@ std::shared_ptr<Task> Board::createTask(const std::string& title,
     return task;
 }
 
-void Board::addTask(std::shared_ptr<Task> task, const std::string& state) {
+void Board::addTask(shared_ptr<Task> task, const string& state) {
     if (task && hasState(state)) {
         tasksByState[state].push_back(task);
         tasksById[task->getId()] = task;
@@ -110,13 +112,13 @@ void Board::removeTask(int taskId) {
     auto it = tasksById.find(taskId);
     if (it != tasksById.end()) {
         auto task = it->second;
-        std::string state = task->getState();
+        string state = task->getState();
         
         // Eliminar de la lista por estado
         auto& stateTasks = tasksByState[state];
         stateTasks.erase(
-            std::remove_if(stateTasks.begin(), stateTasks.end(),
-                [taskId](const std::shared_ptr<Task>& t) {
+            remove_if(stateTasks.begin(), stateTasks.end(),
+                [taskId](const shared_ptr<Task>& t) {
                     return t->getId() == taskId;
                 }),
             stateTasks.end()
@@ -127,7 +129,7 @@ void Board::removeTask(int taskId) {
     }
 }
 
-void Board::moveTask(int taskId, const std::string& newState, const std::string& movedBy) {
+void Board::moveTask(int taskId, const string& newState, const string& movedBy) {
     if (!hasState(newState)) {
         return;  // Estado no válido
     }
@@ -143,13 +145,13 @@ void Board::moveTask(int taskId, const std::string& newState, const std::string&
         return;  // No se puede mover por dependencias
     }
     
-    std::string oldState = task->getState();
+    string oldState = task->getState();
     
     // Eliminar de la lista del estado anterior
     auto& oldStateTasks = tasksByState[oldState];
     oldStateTasks.erase(
-        std::remove_if(oldStateTasks.begin(), oldStateTasks.end(),
-            [taskId](const std::shared_ptr<Task>& t) {
+        remove_if(oldStateTasks.begin(), oldStateTasks.end(),
+            [taskId](const shared_ptr<Task>& t) {
                 return t->getId() == taskId;
             }),
         oldStateTasks.end()
@@ -163,18 +165,18 @@ void Board::moveTask(int taskId, const std::string& newState, const std::string&
 }
 
 // Búsqueda y filtrado
-std::shared_ptr<Task> Board::findTaskById(int id) const {
+shared_ptr<Task> Board::findTaskById(int id) const {
     auto it = tasksById.find(id);
     return (it != tasksById.end()) ? it->second : nullptr;
 }
 
-std::vector<std::shared_ptr<Task>> Board::getTasksByState(const std::string& state) const {
+vector<shared_ptr<Task>> Board::getTasksByState(const string& state) const {
     auto it = tasksByState.find(state);
-    return (it != tasksByState.end()) ? it->second : std::vector<std::shared_ptr<Task>>();
+    return (it != tasksByState.end()) ? it->second : vector<shared_ptr<Task>>();
 }
 
-std::vector<std::shared_ptr<Task>> Board::getTasksByUser(int userId) const {
-    std::vector<std::shared_ptr<Task>> result;
+vector<shared_ptr<Task>> Board::getTasksByUser(int userId) const {
+    vector<shared_ptr<Task>> result;
     
     for (const auto& pair : tasksById) {
         if (pair.second->getAssignedUserId() == userId) {
@@ -185,8 +187,8 @@ std::vector<std::shared_ptr<Task>> Board::getTasksByUser(int userId) const {
     return result;
 }
 
-std::vector<std::shared_ptr<Task>> Board::getTasksByTag(const std::string& tag) const {
-    std::vector<std::shared_ptr<Task>> result;
+vector<shared_ptr<Task>> Board::getTasksByTag(const string& tag) const {
+    vector<shared_ptr<Task>> result;
     
     for (const auto& pair : tasksById) {
         if (pair.second->hasTag(tag)) {
@@ -197,8 +199,8 @@ std::vector<std::shared_ptr<Task>> Board::getTasksByTag(const std::string& tag) 
     return result;
 }
 
-std::vector<std::shared_ptr<Task>> Board::getOverdueTasks() const {
-    std::vector<std::shared_ptr<Task>> result;
+vector<shared_ptr<Task>> Board::getOverdueTasks() const {
+    vector<shared_ptr<Task>> result;
     
     for (const auto& pair : tasksById) {
         if (pair.second->isOverdue()) {
@@ -209,8 +211,8 @@ std::vector<std::shared_ptr<Task>> Board::getOverdueTasks() const {
     return result;
 }
 
-std::vector<std::shared_ptr<Task>> Board::getAllTasks() const {
-    std::vector<std::shared_ptr<Task>> result;
+vector<shared_ptr<Task>> Board::getAllTasks() const {
+    vector<shared_ptr<Task>> result;
     
     for (const auto& pair : tasksById) {
         result.push_back(pair.second);
@@ -220,7 +222,7 @@ std::vector<std::shared_ptr<Task>> Board::getAllTasks() const {
 }
 
 // Validaciones de dependencias
-bool Board::canMoveTask(int taskId, const std::string& newState) const {
+bool Board::canMoveTask(int taskId, const string& newState) const {
     auto task = findTaskById(taskId);
     if (!task) {
         return false;
@@ -247,8 +249,8 @@ bool Board::canMoveTask(int taskId, const std::string& newState) const {
     return true;
 }
 
-std::vector<int> Board::getBlockingTasks(int taskId) const {
-    std::vector<int> blocking;
+vector<int> Board::getBlockingTasks(int taskId) const {
+    vector<int> blocking;
     
     auto task = findTaskById(taskId);
     if (!task) {
@@ -270,7 +272,7 @@ int Board::getTotalTaskCount() const {
     return static_cast<int>(tasksById.size());
 }
 
-int Board::getTaskCountByState(const std::string& state) const {
+int Board::getTaskCountByState(const string& state) const {
     auto it = tasksByState.find(state);
     return (it != tasksByState.end()) ? static_cast<int>(it->second.size()) : 0;
 }
@@ -286,8 +288,8 @@ double Board::getCompletionPercentage() const {
 }
 
 // Métodos de utilidad
-std::string Board::toString() const {
-    std::stringstream ss;
+string Board::toString() const {
+    stringstream ss;
     ss << "Board[ID: " << id << ", Name: " << name 
        << ", Tasks: " << getTotalTaskCount() 
        << ", Completion: " << getCompletionPercentage() << "%]\n";

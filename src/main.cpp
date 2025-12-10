@@ -5,6 +5,8 @@
 #include <QTranslator>
 #include <QIcon>
 
+using namespace std;
+
 int main(int argc, char *argv[]) {
     // Crear aplicación
     QApplication app(argc, argv);

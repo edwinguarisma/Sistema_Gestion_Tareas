@@ -4,8 +4,10 @@
 #include <QMessageBox>
 #include <QGraphicsDropShadowEffect>
 
-BoardWidget::BoardWidget(std::shared_ptr<Board> board,
-                        const std::string& currentUserName,
+using namespace std;
+
+BoardWidget::BoardWidget(shared_ptr<Board> board,
+                        const string& currentUserName,
                         QWidget *parent)
     : QWidget(parent), board(board), currentUserName(currentUserName) {
     setupUI();
@@ -18,23 +20,26 @@ void BoardWidget::setupUI() {
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
     
-    // Título del tablero - estilo Trello profesional
+    // Título del tablero - minimalista moderno
     QWidget* titleWidget = new QWidget();
     QHBoxLayout* titleLayout = new QHBoxLayout(titleWidget);
-    titleLayout->setContentsMargins(16, 12, 16, 12);
+    titleLayout->setContentsMargins(24, 16, 24, 16);
     
     QLabel* titleLabel = new QLabel(QString::fromStdString(board->getName()));
     QFont titleFont = titleLabel->font();
-    titleFont.setPointSize(16);
+    titleFont.setPointSize(18);
     titleFont.setBold(true);
     titleLabel->setFont(titleFont);
-    titleLabel->setStyleSheet("color: #172b4d;");
+    titleLabel->setStyleSheet("color: #1a1a1a;");
     titleLayout->addWidget(titleLabel);
     
     titleLayout->addStretch();
     
     titleWidget->setLayout(titleLayout);
-    titleWidget->setStyleSheet("background: #fafbfc; border-bottom: 1px solid #dfe1e6;");
+    titleWidget->setStyleSheet(
+        "background: #ffffff; "
+        "border-bottom: 1px solid #e5e5e5;"
+    );
     
     mainLayout->addWidget(titleWidget);
     
@@ -45,6 +50,8 @@ void BoardWidget::setupUI() {
     scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     
     columnsContainer = new QWidget();
+    columnsContainer->setStyleSheet("QWidget { background: #f7f8fa; }");
+    
     columnsLayout = new QHBoxLayout(columnsContainer);
     columnsLayout->setSpacing(16);
     columnsLayout->setContentsMargins(20, 20, 20, 20);
@@ -61,25 +68,24 @@ void BoardWidget::setupUI() {
     
     setStyleSheet(
         "BoardWidget {"
-        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
-        "    stop:0 #5f1eb8, stop:1 #7c49ff);"
+        "  background-color: #f7f8fa;"
         "}"
         "QScrollArea {"
-        "  background: transparent;"
+        "  background-color: #f7f8fa;"
         "  border: none;"
         "}"
         "QScrollBar:horizontal {"
         "  border: none;"
-        "  background: rgba(255, 255, 255, 0.2);"
-        "  height: 12px;"
+        "  background: #e5e5e5;"
+        "  height: 10px;"
         "}"
         "QScrollBar::handle:horizontal {"
-        "  background: rgba(255, 255, 255, 0.5);"
-        "  border-radius: 6px;"
+        "  background: #c0c0c0;"
+        "  border-radius: 5px;"
         "  min-width: 40px;"
         "}"
         "QScrollBar::handle:horizontal:hover {"
-        "  background: rgba(255, 255, 255, 0.8);"
+        "  background: #a0a0a0;"
         "}"
     );
 }
@@ -132,7 +138,7 @@ void BoardWidget::populateTasks() {
     }
 }
 
-void BoardWidget::onAddTaskClicked(const std::string& state) {
+void BoardWidget::onAddTaskClicked(const string& state) {
     emit newTaskRequested(state);
 }
 
@@ -140,7 +146,7 @@ void BoardWidget::onTaskCardClicked(int taskId) {
     emit taskSelected(taskId);
 }
 
-void BoardWidget::onTaskCardMoved(int taskId, const std::string& newState) {
+void BoardWidget::onTaskCardMoved(int taskId, const string& newState) {
     if (board) {
         board->moveTask(taskId, newState, currentUserName);
         refresh();
@@ -152,7 +158,7 @@ void BoardWidget::onRefresh() {
     refresh();
 }
 
-std::shared_ptr<Board> BoardWidget::getBoard() const {
+shared_ptr<Board> BoardWidget::getBoard() const {
     return board;
 }
 
@@ -167,14 +173,14 @@ void BoardWidget::refresh() {
     populateTasks();
 }
 
-void BoardWidget::addTask(std::shared_ptr<Task> task) {
+void BoardWidget::addTask(shared_ptr<Task> task) {
     if (!task || !board) return;
     
     board->addTask(task, task->getState());
     refresh();
 }
 
-void BoardWidget::updateTask(std::shared_ptr<Task> task) {
+void BoardWidget::updateTask(shared_ptr<Task> task) {
     if (!task) return;
     
     auto it = taskCards.find(task->getId());

@@ -9,7 +9,9 @@
 #include <QEnterEvent>
 #endif
 
-TaskCard::TaskCard(std::shared_ptr<Task> task, QWidget *parent)
+using namespace std;
+
+TaskCard::TaskCard(shared_ptr<Task> task, QWidget *parent)
     : QWidget(parent), task(task), isDragging(false) {
     setupUI();
     setAcceptDrops(true);
@@ -27,56 +29,56 @@ void TaskCard::setupUI() {
     titleLabel->setWordWrap(true);
     QFont titleFont = titleLabel->font();
     titleFont.setBold(false);
-    titleFont.setPointSize(10);
+    titleFont.setPointSize(11);
     titleLabel->setFont(titleFont);
-    titleLabel->setStyleSheet("color: #172b4d;");
+    titleLabel->setStyleSheet("color: #1a1a1a; background: transparent;");
     layout->addWidget(titleLabel);
     
     // Información
     infoLabel = new QLabel(this);
     QFont infoFont = infoLabel->font();
-    infoFont.setPointSize(8);
+    infoFont.setPointSize(9);
     infoLabel->setFont(infoFont);
-    infoLabel->setStyleSheet("color: #5e6c84;");
+    infoLabel->setStyleSheet("color: #666666; background: transparent;");
     layout->addWidget(infoLabel);
     
     // Tags
     tagsLabel = new QLabel(this);
     QFont tagsFont = tagsLabel->font();
-    tagsFont.setPointSize(8);
+    tagsFont.setPointSize(9);
     tagsLabel->setFont(tagsFont);
     tagsLabel->setStyleSheet(
-        "background-color: #dfe1e6; "
-        "padding: 3px 6px; "
-        "border-radius: 3px; "
-        "color: #5e6c84;"
+        "background-color: #f0f0f0; "
+        "padding: 4px 8px; "
+        "border-radius: 4px; "
+        "color: #4a4a4a;"
     );
     layout->addWidget(tagsLabel);
     
     // Prioridad (badge discreto en esquina)
     priorityLabel = new QLabel(this);
     priorityLabel->setFixedHeight(4);
-    priorityLabel->setStyleSheet("border-radius: 2px;");
+    priorityLabel->setStyleSheet("border-radius: 2px; background: transparent;");
     layout->addWidget(priorityLabel);
     
     setLayout(layout);
     
     setStyleSheet(
         "TaskCard {"
-        "  background: #fbfbff;"
-        "  border: 1px solid rgba(0, 0, 0, 0.08);"
-        "  border-radius: 4px;"
+        "  background-color: #ffffff;"
+        "  border: 1px solid #e0e0e0;"
+        "  border-radius: 8px;"
         "}"
     );
     
     QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect();
-    shadow->setBlurRadius(6);
-    shadow->setColor(QColor(0, 0, 0, 30));
-    shadow->setOffset(0, 2);
+    shadow->setBlurRadius(4);
+    shadow->setColor(QColor(0, 0, 0, 8));
+    shadow->setOffset(0, 1);
     setGraphicsEffect(shadow);
     
-    setMinimumHeight(90);
-    setMaximumWidth(300);
+    setMinimumHeight(100);
+    setMaximumWidth(320);
     setCursor(Qt::PointingHandCursor);
     
     updateDisplay();
@@ -120,15 +122,15 @@ void TaskCard::updateDisplay() {
 }
 
 QString TaskCard::getPriorityColor() const {
-    if (!task) return "#c1c7d0";
+    if (!task) return "#e0e0e0";
     
     switch (task->getPriority()) {
-        case 5: return "#eb5a46";  // Rojo - Muy alta (Trello red)
-        case 4: return "#ff9f1a";  // Naranja - Alta (Trello orange)
-        case 3: return "#f2d600";  // Amarillo - Media (Trello yellow)
-        case 2: return "#61bd4f";  // Verde - Baja (Trello green)
-        case 1: return "#0079bf";  // Azul - Muy baja (Trello blue)
-        default: return "#c1c7d0";
+        case 5: return "#E53935";  // Rojo intenso - Muy alta
+        case 4: return "#FF6F00";  // Naranja oscuro - Alta
+        case 3: return "#FFA000";  // Amarillo/oro - Media
+        case 2: return "#43A047";  // Verde - Baja
+        case 1: return "#1E88E5";  // Azul - Muy baja
+        default: return "#e0e0e0";
     }
 }
 
@@ -136,13 +138,13 @@ QString TaskCard::getDueDateText() const {
     if (!task) return "";
     
     auto dueDate = task->getDueDate();
-    auto now = std::chrono::system_clock::now();
+    auto now = chrono::system_clock::now();
     
     if (dueDate <= now) {
         return "📅 Sin fecha límite";
     }
     
-    std::string dateStr = DateUtils::toDateString(dueDate);
+    string dateStr = DateUtils::toDateString(dueDate);
     int daysLeft = task->getDaysUntilDue();
     
     QString text = "📅 Vence: " + QString::fromStdString(dateStr);
@@ -249,17 +251,17 @@ void TaskCard::enterEvent(QEvent *event) {
 #endif
     setStyleSheet(
         "TaskCard {"
-        "  background: #f4f5f7;"
-        "  border: none;"
-        "  border-radius: 3px;"
+        "  background-color: #f5f5f5;"
+        "  border: 2px solid #0078d4;"
+        "  border-radius: 8px;"
         "}"
     );
     
     // Sombra más pronunciada en hover
     QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect();
-    shadow->setBlurRadius(8);
-    shadow->setColor(QColor(0, 0, 0, 40));
-    shadow->setOffset(0, 2);
+    shadow->setBlurRadius(12);
+    shadow->setColor(QColor(0, 0, 0, 25));
+    shadow->setOffset(0, 4);
     setGraphicsEffect(shadow);
     
     QWidget::enterEvent(event);
@@ -268,27 +270,27 @@ void TaskCard::enterEvent(QEvent *event) {
 void TaskCard::leaveEvent(QEvent *event) {
     setStyleSheet(
         "TaskCard {"
-        "  background: #ffffff;"
-        "  border: none;"
-        "  border-radius: 3px;"
+        "  background-color: #ffffff;"
+        "  border: 1px solid #e0e0e0;"
+        "  border-radius: 8px;"
         "}"
     );
     
     // Volver a sombra sutil
     QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect();
-    shadow->setBlurRadius(1);
-    shadow->setColor(QColor(0, 0, 0, 20));
+    shadow->setBlurRadius(4);
+    shadow->setColor(QColor(0, 0, 0, 8));
     shadow->setOffset(0, 1);
     setGraphicsEffect(shadow);
     
     QWidget::leaveEvent(event);
 }
 
-std::shared_ptr<Task> TaskCard::getTask() const {
+shared_ptr<Task> TaskCard::getTask() const {
     return task;
 }
 
-void TaskCard::updateTask(std::shared_ptr<Task> newTask) {
+void TaskCard::updateTask(shared_ptr<Task> newTask) {
     task = newTask;
     updateDisplay();
 }
@@ -297,29 +299,29 @@ void TaskCard::setHighlighted(bool highlighted) {
     if (highlighted) {
         setStyleSheet(
             "TaskCard {"
-            "  background: #fff4e6;"
-            "  border: none;"
-            "  border-radius: 3px;"
+            "  background-color: #fff8e1;"
+            "  border: 2px solid #FFA500;"
+            "  border-radius: 8px;"
             "}"
         );
         
         QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect();
-        shadow->setBlurRadius(8);
-        shadow->setColor(QColor(255, 153, 31, 100));
-        shadow->setOffset(0, 2);
+        shadow->setBlurRadius(12);
+        shadow->setColor(QColor(255, 165, 0, 60));
+        shadow->setOffset(0, 4);
         setGraphicsEffect(shadow);
     } else {
         setStyleSheet(
             "TaskCard {"
-            "  background: #ffffff;"
-            "  border: none;"
-            "  border-radius: 3px;"
+            "  background-color: #ffffff;"
+            "  border: 1px solid #e0e0e0;"
+            "  border-radius: 8px;"
             "}"
         );
         
         QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect();
-        shadow->setBlurRadius(1);
-        shadow->setColor(QColor(0, 0, 0, 20));
+        shadow->setBlurRadius(4);
+        shadow->setColor(QColor(0, 0, 0, 8));
         shadow->setOffset(0, 1);
         setGraphicsEffect(shadow);
     }

@@ -4,22 +4,24 @@
 #include <ctime>
 #include <algorithm>
 
+using namespace std;
+
 // ActivityEntry
-ActivityEntry::ActivityEntry(const std::string& userName, const std::string& actionType,
-                             const std::string& fieldModified,
-                             const std::string& oldValue,
-                             const std::string& newValue,
-                             const std::string& description)
+ActivityEntry::ActivityEntry(const string& userName, const string& actionType,
+                             const string& fieldModified,
+                             const string& oldValue,
+                             const string& newValue,
+                             const string& description)
     : userName(userName), actionType(actionType), fieldModified(fieldModified),
       oldValue(oldValue), newValue(newValue), description(description),
-      timestamp(std::chrono::system_clock::now()) {}
+      timestamp(chrono::system_clock::now()) {}
 
-std::string ActivityEntry::toString() const {
-    std::stringstream ss;
+string ActivityEntry::toString() const {
+    stringstream ss;
     
     // Convertir timestamp a string
-    std::time_t time = std::chrono::system_clock::to_time_t(timestamp);
-    ss << "[" << std::put_time(std::localtime(&time), "%Y-%m-%d %H:%M:%S") << "] ";
+    time_t time = chrono::system_clock::to_time_t(timestamp);
+    ss << "[" << put_time(localtime(&time), "%Y-%m-%d %H:%M:%S") << "] ";
     ss << userName << " - " << actionType;
     
     if (!fieldModified.empty()) {
@@ -61,66 +63,66 @@ void ActivityLog::addEntry(const ActivityEntry& entry) {
     }
 }
 
-void ActivityLog::logCreation(const std::string& userName, const std::string& objectName) {
+void ActivityLog::logCreation(const string& userName, const string& objectName) {
     ActivityEntry entry(userName, "created", "", "", "", 
                         "Creó " + objectName);
     addEntry(entry);
 }
 
-void ActivityLog::logMove(const std::string& userName, const std::string& fromState, 
-                         const std::string& toState) {
+void ActivityLog::logMove(const string& userName, const string& fromState, 
+                         const string& toState) {
     ActivityEntry entry(userName, "moved", "estado", fromState, toState,
                         "Movió de " + fromState + " a " + toState);
     addEntry(entry);
 }
 
-void ActivityLog::logUpdate(const std::string& userName, const std::string& field,
-                           const std::string& oldValue, const std::string& newValue) {
+void ActivityLog::logUpdate(const string& userName, const string& field,
+                           const string& oldValue, const string& newValue) {
     ActivityEntry entry(userName, "updated", field, oldValue, newValue,
                         "Actualizó " + field);
     addEntry(entry);
 }
 
-void ActivityLog::logAssignment(const std::string& userName, const std::string& assignedTo) {
+void ActivityLog::logAssignment(const string& userName, const string& assignedTo) {
     ActivityEntry entry(userName, "assigned", "asignado a", "", assignedTo,
                         "Asignó a " + assignedTo);
     addEntry(entry);
 }
 
-void ActivityLog::logDeletion(const std::string& userName) {
+void ActivityLog::logDeletion(const string& userName) {
     ActivityEntry entry(userName, "deleted", "", "", "",
                         "Eliminó la tarea");
     addEntry(entry);
 }
 
 // Consultas
-const std::vector<ActivityEntry>& ActivityLog::getEntries() const {
+const vector<ActivityEntry>& ActivityLog::getEntries() const {
     return entries;
 }
 
-std::vector<ActivityEntry> ActivityLog::getEntriesByUser(const std::string& userName) const {
-    std::vector<ActivityEntry> result;
-    std::copy_if(entries.begin(), entries.end(), std::back_inserter(result),
+vector<ActivityEntry> ActivityLog::getEntriesByUser(const string& userName) const {
+    vector<ActivityEntry> result;
+    copy_if(entries.begin(), entries.end(), back_inserter(result),
         [&userName](const ActivityEntry& entry) {
             return entry.userName == userName;
         });
     return result;
 }
 
-std::vector<ActivityEntry> ActivityLog::getEntriesByActionType(const std::string& actionType) const {
-    std::vector<ActivityEntry> result;
-    std::copy_if(entries.begin(), entries.end(), std::back_inserter(result),
+vector<ActivityEntry> ActivityLog::getEntriesByActionType(const string& actionType) const {
+    vector<ActivityEntry> result;
+    copy_if(entries.begin(), entries.end(), back_inserter(result),
         [&actionType](const ActivityEntry& entry) {
             return entry.actionType == actionType;
         });
     return result;
 }
 
-std::vector<ActivityEntry> ActivityLog::getEntriesByDateRange(
-    const std::chrono::system_clock::time_point& start,
-    const std::chrono::system_clock::time_point& end) const {
-    std::vector<ActivityEntry> result;
-    std::copy_if(entries.begin(), entries.end(), std::back_inserter(result),
+vector<ActivityEntry> ActivityLog::getEntriesByDateRange(
+    const chrono::system_clock::time_point& start,
+    const chrono::system_clock::time_point& end) const {
+    vector<ActivityEntry> result;
+    copy_if(entries.begin(), entries.end(), back_inserter(result),
         [&start, &end](const ActivityEntry& entry) {
             return entry.timestamp >= start && entry.timestamp <= end;
         });
@@ -136,8 +138,8 @@ size_t ActivityLog::getSize() const {
     return entries.size();
 }
 
-std::string ActivityLog::toString() const {
-    std::stringstream ss;
+string ActivityLog::toString() const {
+    stringstream ss;
     ss << "Activity Log (" << entries.size() << " entradas):\n";
     ss << "----------------------------------------\n";
     

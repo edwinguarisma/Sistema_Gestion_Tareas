@@ -2,10 +2,12 @@
 #include <sstream>
 #include <algorithm>
 
+using namespace std;
+
 // Constructores
 Subtask::Subtask() : id(-1), title(""), description(""), completed(false) {}
 
-Subtask::Subtask(int id, const std::string& title, const std::string& description)
+Subtask::Subtask(int id, const string& title, const string& description)
     : id(id), title(title), description(description), completed(false) {}
 
 // Destructor
@@ -16,11 +18,11 @@ int Subtask::getId() const {
     return id;
 }
 
-std::string Subtask::getTitle() const {
+string Subtask::getTitle() const {
     return title;
 }
 
-std::string Subtask::getDescription() const {
+string Subtask::getDescription() const {
     return description;
 }
 
@@ -28,16 +30,16 @@ bool Subtask::isCompleted() const {
     return completed;
 }
 
-const std::vector<std::shared_ptr<Subtask>>& Subtask::getChildSubtasks() const {
+const vector<shared_ptr<Subtask>>& Subtask::getChildSubtasks() const {
     return childSubtasks;
 }
 
 // Setters
-void Subtask::setTitle(const std::string& title) {
+void Subtask::setTitle(const string& title) {
     this->title = title;
 }
 
-void Subtask::setDescription(const std::string& description) {
+void Subtask::setDescription(const string& description) {
     this->description = description;
 }
 
@@ -46,7 +48,7 @@ void Subtask::setCompleted(bool completed) {
 }
 
 // Gestión de subtareas anidadas
-void Subtask::addChildSubtask(std::shared_ptr<Subtask> subtask) {
+void Subtask::addChildSubtask(shared_ptr<Subtask> subtask) {
     if (subtask) {
         childSubtasks.push_back(subtask);
     }
@@ -54,15 +56,15 @@ void Subtask::addChildSubtask(std::shared_ptr<Subtask> subtask) {
 
 void Subtask::removeChildSubtask(int subtaskId) {
     childSubtasks.erase(
-        std::remove_if(childSubtasks.begin(), childSubtasks.end(),
-            [subtaskId](const std::shared_ptr<Subtask>& st) {
+        remove_if(childSubtasks.begin(), childSubtasks.end(),
+            [subtaskId](const shared_ptr<Subtask>& st) {
                 return st->getId() == subtaskId;
             }),
         childSubtasks.end()
     );
 }
 
-std::shared_ptr<Subtask> Subtask::findSubtaskById(int id) {
+shared_ptr<Subtask> Subtask::findSubtaskById(int id) {
     if (this->id == id) {
         // Intentar obtener shared_ptr si existe, sino retornar nullptr
         // porque esta función se llama desde objetos que ya son shared_ptr
@@ -106,9 +108,9 @@ double Subtask::getCompletionPercentage() const {
     return (countCompletedSubtasks() * 100.0) / total;
 }
 
-std::string Subtask::toString(int depth) const {
-    std::stringstream ss;
-    std::string indent(depth * 2, ' ');
+string Subtask::toString(int depth) const {
+    stringstream ss;
+    string indent(depth * 2, ' ');
     
     ss << indent << "[" << (completed ? "X" : " ") << "] " 
        << title;

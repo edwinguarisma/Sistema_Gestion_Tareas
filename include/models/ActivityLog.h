@@ -6,25 +6,27 @@
 #include <chrono>
 #include <memory>
 
+using namespace std;
+
 /**
  * @brief Estructura que representa una entrada en el registro de actividad
  */
 struct ActivityEntry {
-    std::chrono::system_clock::time_point timestamp;
-    std::string userName;       // Quién hizo el cambio
-    std::string actionType;     // "created", "moved", "updated", "deleted", "assigned"
-    std::string fieldModified;  // Campo que se modificó
-    std::string oldValue;       // Valor anterior
-    std::string newValue;       // Valor nuevo
-    std::string description;    // Descripción detallada del cambio
+    chrono::system_clock::time_point timestamp;
+    string userName;       // Quién hizo el cambio
+    string actionType;     // "created", "moved", "updated", "deleted", "assigned"
+    string fieldModified;  // Campo que se modificó
+    string oldValue;       // Valor anterior
+    string newValue;       // Valor nuevo
+    string description;    // Descripción detallada del cambio
     
-    ActivityEntry(const std::string& userName, const std::string& actionType,
-                  const std::string& fieldModified = "", 
-                  const std::string& oldValue = "",
-                  const std::string& newValue = "",
-                  const std::string& description = "");
+    ActivityEntry(const string& userName, const string& actionType,
+                  const string& fieldModified = "", 
+                  const string& oldValue = "",
+                  const string& newValue = "",
+                  const string& description = "");
     
-    std::string toString() const;
+    string toString() const;
 };
 
 /**
@@ -33,7 +35,7 @@ struct ActivityEntry {
  */
 class ActivityLog {
 private:
-    std::vector<ActivityEntry> entries;
+    vector<ActivityEntry> entries;
     int maxEntries;  // Límite de entradas para evitar crecimiento indefinido
 
 public:
@@ -45,25 +47,25 @@ public:
     
     // Agregar entradas
     void addEntry(const ActivityEntry& entry);
-    void logCreation(const std::string& userName, const std::string& objectName);
-    void logMove(const std::string& userName, const std::string& fromState, const std::string& toState);
-    void logUpdate(const std::string& userName, const std::string& field, 
-                   const std::string& oldValue, const std::string& newValue);
-    void logAssignment(const std::string& userName, const std::string& assignedTo);
-    void logDeletion(const std::string& userName);
+    void logCreation(const string& userName, const string& objectName);
+    void logMove(const string& userName, const string& fromState, const string& toState);
+    void logUpdate(const string& userName, const string& field, 
+                   const string& oldValue, const string& newValue);
+    void logAssignment(const string& userName, const string& assignedTo);
+    void logDeletion(const string& userName);
     
     // Consultas
-    const std::vector<ActivityEntry>& getEntries() const;
-    std::vector<ActivityEntry> getEntriesByUser(const std::string& userName) const;
-    std::vector<ActivityEntry> getEntriesByActionType(const std::string& actionType) const;
-    std::vector<ActivityEntry> getEntriesByDateRange(
-        const std::chrono::system_clock::time_point& start,
-        const std::chrono::system_clock::time_point& end) const;
+    const vector<ActivityEntry>& getEntries() const;
+    vector<ActivityEntry> getEntriesByUser(const string& userName) const;
+    vector<ActivityEntry> getEntriesByActionType(const string& actionType) const;
+    vector<ActivityEntry> getEntriesByDateRange(
+        const chrono::system_clock::time_point& start,
+        const chrono::system_clock::time_point& end) const;
     
     // Métodos de utilidad
     void clear();
     size_t getSize() const;
-    std::string toString() const;
+    string toString() const;
 };
 
 #endif // ACTIVITY_LOG_H

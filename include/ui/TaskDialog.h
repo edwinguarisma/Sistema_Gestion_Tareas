@@ -16,6 +16,8 @@
 #include "models/Board.h"
 #include "models/Project.h"
 
+using namespace std;
+
 /**
  * @brief Diálogo para crear/editar tareas
  */
@@ -23,9 +25,9 @@ class TaskDialog : public QDialog {
     Q_OBJECT
 
 private:
-    std::shared_ptr<Task> task;
-    std::shared_ptr<Board> board;
-    std::shared_ptr<Project> project;
+    shared_ptr<Task> task;
+    shared_ptr<Board> board;
+    shared_ptr<Project> project;
     bool isNewTask;
     
     // Pestaña principal
@@ -82,13 +84,13 @@ private slots:
     void onRestoreVersion();
 
 public:
-    explicit TaskDialog(std::shared_ptr<Board> board,
-                       std::shared_ptr<Project> project,
-                       std::shared_ptr<Task> task = nullptr,
+    explicit TaskDialog(shared_ptr<Board> board,
+                       shared_ptr<Project> project,
+                       shared_ptr<Task> task = nullptr,
                        QWidget *parent = nullptr);
     ~TaskDialog();
     
-    std::shared_ptr<Task> getTask() const;
+    shared_ptr<Task> getTask() const;
     bool wasAccepted() const;
 };
 

@@ -2,15 +2,17 @@
 #include <sstream>
 #include <algorithm>
 
+using namespace std;
+
 // Constructores
 Project::Project()
     : id(-1), name(""), description(""), 
-      createdDate(std::chrono::system_clock::now()),
+      createdDate(chrono::system_clock::now()),
       nextBoardId(1), nextUserId(1) {}
 
-Project::Project(int id, const std::string& name, const std::string& description)
+Project::Project(int id, const string& name, const string& description)
     : id(id), name(name), description(description),
-      createdDate(std::chrono::system_clock::now()),
+      createdDate(chrono::system_clock::now()),
       nextBoardId(1), nextUserId(1) {}
 
 // Destructor
@@ -21,40 +23,40 @@ int Project::getId() const {
     return id;
 }
 
-std::string Project::getName() const {
+string Project::getName() const {
     return name;
 }
 
-std::string Project::getDescription() const {
+string Project::getDescription() const {
     return description;
 }
 
-std::chrono::system_clock::time_point Project::getCreatedDate() const {
+chrono::system_clock::time_point Project::getCreatedDate() const {
     return createdDate;
 }
 
-const std::vector<std::shared_ptr<Board>>& Project::getBoards() const {
+const vector<shared_ptr<Board>>& Project::getBoards() const {
     return boards;
 }
 
 // Setters
-void Project::setName(const std::string& name) {
+void Project::setName(const string& name) {
     this->name = name;
 }
 
-void Project::setDescription(const std::string& description) {
+void Project::setDescription(const string& description) {
     this->description = description;
 }
 
 // Gestión de tableros
-std::shared_ptr<Board> Project::createBoard(const std::string& name, 
-                                             const std::string& description) {
-    auto board = std::make_shared<Board>(nextBoardId++, name, description);
+shared_ptr<Board> Project::createBoard(const string& name, 
+                                             const string& description) {
+    auto board = make_shared<Board>(nextBoardId++, name, description);
     boards.push_back(board);
     return board;
 }
 
-void Project::addBoard(std::shared_ptr<Board> board) {
+void Project::addBoard(shared_ptr<Board> board) {
     if (board) {
         boards.push_back(board);
     }
@@ -62,15 +64,15 @@ void Project::addBoard(std::shared_ptr<Board> board) {
 
 void Project::removeBoard(int boardId) {
     boards.erase(
-        std::remove_if(boards.begin(), boards.end(),
-            [boardId](const std::shared_ptr<Board>& b) {
+        remove_if(boards.begin(), boards.end(),
+            [boardId](const shared_ptr<Board>& b) {
                 return b->getId() == boardId;
             }),
         boards.end()
     );
 }
 
-std::shared_ptr<Board> Project::findBoardById(int id) const {
+shared_ptr<Board> Project::findBoardById(int id) const {
     for (const auto& board : boards) {
         if (board->getId() == id) {
             return board;
@@ -80,15 +82,15 @@ std::shared_ptr<Board> Project::findBoardById(int id) const {
 }
 
 // Gestión de usuarios
-std::shared_ptr<User> Project::createUser(const std::string& name, 
-                                           const std::string& email,
-                                           const std::string& role) {
-    auto user = std::make_shared<User>(nextUserId++, name, email, role);
+shared_ptr<User> Project::createUser(const string& name, 
+                                           const string& email,
+                                           const string& role) {
+    auto user = make_shared<User>(nextUserId++, name, email, role);
     users[user->getId()] = user;
     return user;
 }
 
-void Project::addUser(std::shared_ptr<User> user) {
+void Project::addUser(shared_ptr<User> user) {
     if (user) {
         users[user->getId()] = user;
     }
@@ -98,12 +100,12 @@ void Project::removeUser(int userId) {
     users.erase(userId);
 }
 
-std::shared_ptr<User> Project::findUserById(int id) const {
+shared_ptr<User> Project::findUserById(int id) const {
     auto it = users.find(id);
     return (it != users.end()) ? it->second : nullptr;
 }
 
-std::shared_ptr<User> Project::findUserByEmail(const std::string& email) const {
+shared_ptr<User> Project::findUserByEmail(const string& email) const {
     for (const auto& pair : users) {
         if (pair.second->getEmail() == email) {
             return pair.second;
@@ -112,8 +114,8 @@ std::shared_ptr<User> Project::findUserByEmail(const std::string& email) const {
     return nullptr;
 }
 
-std::vector<std::shared_ptr<User>> Project::getAllUsers() const {
-    std::vector<std::shared_ptr<User>> result;
+vector<shared_ptr<User>> Project::getAllUsers() const {
+    vector<shared_ptr<User>> result;
     
     for (const auto& pair : users) {
         result.push_back(pair.second);
@@ -123,7 +125,7 @@ std::vector<std::shared_ptr<User>> Project::getAllUsers() const {
 }
 
 // Búsqueda global en el proyecto
-std::shared_ptr<Task> Project::findTaskById(int taskId) const {
+shared_ptr<Task> Project::findTaskById(int taskId) const {
     for (const auto& board : boards) {
         auto task = board->findTaskById(taskId);
         if (task) {
@@ -133,8 +135,8 @@ std::shared_ptr<Task> Project::findTaskById(int taskId) const {
     return nullptr;
 }
 
-std::vector<std::shared_ptr<Task>> Project::findTasksByUser(int userId) const {
-    std::vector<std::shared_ptr<Task>> result;
+vector<shared_ptr<Task>> Project::findTasksByUser(int userId) const {
+    vector<shared_ptr<Task>> result;
     
     for (const auto& board : boards) {
         auto tasks = board->getTasksByUser(userId);
@@ -144,13 +146,13 @@ std::vector<std::shared_ptr<Task>> Project::findTasksByUser(int userId) const {
     return result;
 }
 
-std::vector<std::shared_ptr<Task>> Project::findTasksByTitle(const std::string& searchText) const {
-    std::vector<std::shared_ptr<Task>> result;
+vector<shared_ptr<Task>> Project::findTasksByTitle(const string& searchText) const {
+    vector<shared_ptr<Task>> result;
     
     for (const auto& board : boards) {
         auto tasks = board->getAllTasks();
         for (const auto& task : tasks) {
-            if (task->getTitle().find(searchText) != std::string::npos) {
+            if (task->getTitle().find(searchText) != string::npos) {
                 result.push_back(task);
             }
         }
@@ -190,8 +192,8 @@ double Project::getOverallCompletionPercentage() const {
 }
 
 // Métodos de utilidad
-std::string Project::toString() const {
-    std::stringstream ss;
+string Project::toString() const {
+    stringstream ss;
     ss << "Project[ID: " << id << ", Name: " << name << "]\n";
     ss << "  Boards: " << getTotalBoardCount() << "\n";
     ss << "  Users: " << getTotalUserCount() << "\n";

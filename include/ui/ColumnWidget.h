@@ -10,6 +10,8 @@
 #include <QDropEvent>
 #include <string>
 
+using namespace std;
+
 /**
  * @brief Widget de columna que acepta drops de tareas
  */
@@ -17,7 +19,7 @@ class ColumnWidget : public QWidget {
     Q_OBJECT
 
 private:
-    std::string stateName;
+    string stateName;
     QVBoxLayout* mainLayout;
     QWidget* header;
     QLabel* titleLabel;
@@ -39,14 +41,14 @@ protected:
     void dropEvent(QDropEvent *event) override;
 
 signals:
-    void taskDropped(int taskId, const std::string& targetState);
-    void addTaskRequested(const std::string& state);
+    void taskDropped(int taskId, const string& targetState);
+    void addTaskRequested(const string& state);
 
 public:
-    explicit ColumnWidget(const std::string& stateName, QWidget *parent = nullptr);
+    explicit ColumnWidget(const string& stateName, QWidget *parent = nullptr);
     ~ColumnWidget();
     
-    std::string getStateName() const { return stateName; }
+    string getStateName() const { return stateName; }
     QVBoxLayout* getTasksLayout() { return tasksLayout; }
     void setTaskCount(int count);
 };

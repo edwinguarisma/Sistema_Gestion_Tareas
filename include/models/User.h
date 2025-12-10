@@ -4,37 +4,39 @@
 #include <string>
 #include <memory>
 
+using namespace std;
+
 /**
  * @brief Clase que representa un usuario del sistema
  */
 class User {
 private:
     int id;
-    std::string name;
-    std::string email;
-    std::string role;  // "admin", "developer", "manager", etc.
+    string name;
+    string email;
+    string role;  // "admin", "developer", "manager", etc.
 
 public:
     // Constructores
     User();
-    User(int id, const std::string& name, const std::string& email, const std::string& role = "developer");
+    User(int id, const string& name, const string& email, const string& role = "developer");
     
     // Destructor
     ~User();
     
     // Getters
     int getId() const;
-    std::string getName() const;
-    std::string getEmail() const;
-    std::string getRole() const;
+    string getName() const;
+    string getEmail() const;
+    string getRole() const;
     
     // Setters
-    void setName(const std::string& name);
-    void setEmail(const std::string& email);
-    void setRole(const std::string& role);
+    void setName(const string& name);
+    void setEmail(const string& email);
+    void setRole(const string& role);
     
     // Métodos de utilidad
-    std::string toString() const;
+    string toString() const;
     bool operator==(const User& other) const;
 };
 

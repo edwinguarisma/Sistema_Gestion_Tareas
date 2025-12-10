@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include "models/Project.h"
+using namespace std;
 
 /**
  * @brief Gestor centralizado de proyectos (Patrón Singleton)
@@ -12,9 +13,9 @@
  */
 class ProjectManager {
 private:
-    static std::shared_ptr<ProjectManager> instance;
-    std::vector<std::shared_ptr<Project>> projects;
-    std::shared_ptr<Project> currentProject;
+    static shared_ptr<ProjectManager> instance;
+    vector<shared_ptr<Project>> projects;
+    shared_ptr<Project> currentProject;
     int nextProjectId;
     
     // Constructor privado (Singleton)
@@ -25,29 +26,29 @@ public:
     ~ProjectManager();
     
     // Singleton
-    static std::shared_ptr<ProjectManager> getInstance();
+    static shared_ptr<ProjectManager> getInstance();
     
     // Gestión de proyectos
-    std::shared_ptr<Project> createProject(const std::string& name, 
-                                           const std::string& description = "");
-    void addProject(std::shared_ptr<Project> project);
+    shared_ptr<Project> createProject(const string& name, 
+                                           const string& description = "");
+    void addProject(shared_ptr<Project> project);
     void removeProject(int projectId);
-    std::shared_ptr<Project> findProjectById(int id) const;
-    const std::vector<std::shared_ptr<Project>>& getAllProjects() const;
+    shared_ptr<Project> findProjectById(int id) const;
+    const vector<shared_ptr<Project>>& getAllProjects() const;
     
     // Proyecto actual
-    void setCurrentProject(std::shared_ptr<Project> project);
-    std::shared_ptr<Project> getCurrentProject() const;
+    void setCurrentProject(shared_ptr<Project> project);
+    shared_ptr<Project> getCurrentProject() const;
     
     // Validaciones de dependencias circulares
     bool hasCircularDependency(int taskId, int dependencyId, 
-                              std::shared_ptr<Board> board) const;
+                              shared_ptr<Board> board) const;
     bool canAddDependency(int taskId, int dependencyId, 
-                         std::shared_ptr<Board> board) const;
+                         shared_ptr<Board> board) const;
     
     // Búsqueda global
-    std::shared_ptr<Task> findTaskGlobally(int taskId) const;
-    std::vector<std::shared_ptr<Task>> findTasksByUserGlobally(int userId) const;
+    shared_ptr<Task> findTaskGlobally(int taskId) const;
+    vector<shared_ptr<Task>> findTasksByUserGlobally(int userId) const;
     
     // Estadísticas globales
     int getTotalProjectCount() const;

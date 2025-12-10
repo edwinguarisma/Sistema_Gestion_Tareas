@@ -3,7 +3,9 @@
 #include <QFormLayout>
 #include <QMessageBox>
 
-ProjectDialog::ProjectDialog(std::shared_ptr<Project> project, QWidget *parent)
+using namespace std;
+
+ProjectDialog::ProjectDialog(shared_ptr<Project> project, QWidget *parent)
     : QDialog(parent), project(project), 
       isNewProject(project == nullptr), accepted(false) {
     setupUI();
@@ -18,6 +20,48 @@ void ProjectDialog::setupUI() {
     setWindowTitle(isNewProject ? "Nuevo Proyecto" : "Editar Proyecto");
     setMinimumWidth(500);
     setMinimumHeight(300);
+    
+    // Establecer estilo claro para el diálogo
+    setStyleSheet(
+        "QDialog {"
+        "  background-color: #ffffff;"
+        "}"
+        "QLabel {"
+        "  color: #1a1a1a;"
+        "  font-size: 10pt;"
+        "}"
+        "QLineEdit, QTextEdit {"
+        "  background-color: #ffffff;"
+        "  color: #1a1a1a;"
+        "  border: 1px solid #d0d0d0;"
+        "  border-radius: 4px;"
+        "  padding: 8px;"
+        "  font-size: 10pt;"
+        "}"
+        "QLineEdit:focus, QTextEdit:focus {"
+        "  border: 2px solid #0078d4;"
+        "}"
+        "QPushButton {"
+        "  background-color: #f0f0f0;"
+        "  color: #1a1a1a;"
+        "  border: 1px solid #d0d0d0;"
+        "  border-radius: 4px;"
+        "  padding: 10px 20px;"
+        "  font-size: 10pt;"
+        "  font-weight: 500;"
+        "}"
+        "QPushButton:hover {"
+        "  background-color: #e5e5e5;"
+        "  border: 1px solid #b0b0b0;"
+        "}"
+        "QPushButton:pressed {"
+        "  background-color: #d0d0d0;"
+        "}"
+        "QPushButton:disabled {"
+        "  background-color: #f5f5f5;"
+        "  color: #a0a0a0;"
+        "}"
+    );
     
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     
@@ -82,7 +126,7 @@ void ProjectDialog::validateInput() {
     saveButton->setEnabled(!nameEdit->text().trimmed().isEmpty());
 }
 
-std::shared_ptr<Project> ProjectDialog::getProject() const {
+shared_ptr<Project> ProjectDialog::getProject() const {
     return project;
 }
 

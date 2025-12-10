@@ -2,7 +2,9 @@
 #include <QGraphicsDropShadowEffect>
 #include <QMimeData>
 
-ColumnWidget::ColumnWidget(const std::string& stateName, QWidget *parent)
+using namespace std;
+
+ColumnWidget::ColumnWidget(const string& stateName, QWidget *parent)
     : QWidget(parent), stateName(stateName), isHighlighted(false) {
     setupUI();
     setAcceptDrops(true);
@@ -22,19 +24,20 @@ void ColumnWidget::setupUI() {
     
     titleLabel = new QLabel(QString::fromStdString(stateName));
     QFont titleFont = titleLabel->font();
-    titleFont.setBold(false);
+    titleFont.setBold(true);
     titleFont.setPointSize(12);
     titleLabel->setFont(titleFont);
-    titleLabel->setStyleSheet("color: #5e6c84;");
+    titleLabel->setStyleSheet("color: #1a1a1a;");
     headerLayout->addWidget(titleLabel);
     
     countLabel = new QLabel("0");
     countLabel->setStyleSheet(
-        "background-color: #dfe1e6; "
-        "color: #5e6c84; "
-        "border-radius: 8px; "
-        "padding: 1px 6px; "
-        "font-size: 9pt;"
+        "background-color: #e5e5e5; "
+        "color: #4a4a4a; "
+        "border-radius: 10px; "
+        "padding: 2px 8px; "
+        "font-size: 10pt; "
+        "font-weight: bold;"
     );
     headerLayout->addWidget(countLabel);
     
@@ -53,20 +56,23 @@ void ColumnWidget::setupUI() {
         "}"
         "QScrollBar:vertical {"
         "  border: none;"
-        "  background: transparent;"
-        "  width: 8px;"
+        "  background: #f0f0f0;"
+        "  width: 6px;"
+        "  border-radius: 3px;"
         "}"
         "QScrollBar::handle:vertical {"
-        "  background: #c1c7d0;"
-        "  border-radius: 4px;"
-        "  min-height: 20px;"
+        "  background: #c0c0c0;"
+        "  border-radius: 3px;"
+        "  min-height: 30px;"
         "}"
         "QScrollBar::handle:vertical:hover {"
-        "  background: #a5adba;"
+        "  background: #a0a0a0;"
         "}"
     );
     
     tasksContainer = new QWidget();
+    tasksContainer->setStyleSheet("QWidget { background-color: transparent; }");
+    
     tasksLayout = new QVBoxLayout(tasksContainer);
     tasksLayout->setSpacing(8);
     tasksLayout->setContentsMargins(4, 4, 4, 4);
@@ -77,22 +83,24 @@ void ColumnWidget::setupUI() {
     
     mainLayout->addWidget(scrollArea, 1);
     
-    // Botón para agregar tarea - estilo Trello
+    // Botón para agregar tarea - minimalista
     addButton = new QPushButton("+ Añadir tarea");
     addButton->setCursor(Qt::PointingHandCursor);
     addButton->setStyleSheet(
         "QPushButton {"
-        "  background: transparent;"
-        "  color: #5e6c84;"
-        "  border: none;"
-        "  padding: 8px;"
-        "  border-radius: 3px;"
-        "  text-align: left;"
+        "  background: #ffffff;"
+        "  color: #4a4a4a;"
+        "  border: 2px dashed #d0d0d0;"
+        "  padding: 10px;"
+        "  border-radius: 6px;"
+        "  text-align: center;"
         "  font-size: 10pt;"
+        "  font-weight: 500;"
         "}"
         "QPushButton:hover {"
-        "  background: #dfe1e6;"
-        "  color: #172b4d;"
+        "  background: #f7f8fa;"
+        "  border: 2px dashed #1a1a1a;"
+        "  color: #1a1a1a;"
         "}"
     );
     
@@ -105,8 +113,8 @@ void ColumnWidget::setupUI() {
     setLayout(mainLayout);
     
     // Estilo de la columna
-    setMinimumWidth(272);
-    setMaximumWidth(272);
+    setMinimumWidth(300);
+    setMaximumWidth(320);
     
     updateHighlight(false);
 
@@ -123,17 +131,17 @@ void ColumnWidget::updateHighlight(bool highlight) {
     if (highlight) {
         setStyleSheet(
             "ColumnWidget {"
-            "  background: #ebecf0;"
-            "  border: 3px solid #5aac44;"
-            "  border-radius: 3px;"
+            "  background-color: #ffffff;"
+            "  border: 3px solid #4CAF50;"
+            "  border-radius: 8px;"
             "}"
         );
     } else {
         setStyleSheet(
             "ColumnWidget {"
-            "  background: #ebecf0;"
-            "  border: 1px solid rgba(0, 0, 0, 0.1);"
-            "  border-radius: 3px;"
+            "  background-color: #ffffff;"
+            "  border: 1px solid #d0d0d0;"
+            "  border-radius: 8px;"
             "}"
         );
     }

@@ -5,8 +5,10 @@
 #include <filesystem>
 #include <algorithm>
 
+using namespace std;
+
 // Constructor
-DataPersistence::DataPersistence(const std::string& dataDirectory)
+DataPersistence::DataPersistence(const string& dataDirectory)
     : dataDirectory(dataDirectory) {
     if (!directoryExists(dataDirectory)) {
         createDirectory(dataDirectory);
@@ -17,8 +19,8 @@ DataPersistence::DataPersistence(const std::string& dataDirectory)
 DataPersistence::~DataPersistence() {}
 
 // Utilidades de strings JSON
-std::string DataPersistence::escapeJson(const std::string& str) const {
-    std::string result;
+string DataPersistence::escapeJson(const string& str) const {
+    string result;
     for (char c : str) {
         switch (c) {
             case '"': result += "\\\""; break;
@@ -32,8 +34,8 @@ std::string DataPersistence::escapeJson(const std::string& str) const {
     return result;
 }
 
-std::string DataPersistence::unescapeJson(const std::string& str) const {
-    std::string result;
+string DataPersistence::unescapeJson(const string& str) const {
+    string result;
     bool escape = false;
     
     for (char c : str) {
@@ -58,10 +60,10 @@ std::string DataPersistence::unescapeJson(const std::string& str) const {
 }
 
 // Serialización en formato TXT simple
-std::string DataPersistence::serializeUser(std::shared_ptr<User> user) const {
+string DataPersistence::serializeUser(shared_ptr<User> user) const {
     if (!user) return "";
     
-    std::stringstream ss;
+    stringstream ss;
     ss << "USER|" << user->getId() << "|" 
        << user->getName() << "|" 
        << user->getEmail() << "|" 
@@ -70,10 +72,10 @@ std::string DataPersistence::serializeUser(std::shared_ptr<User> user) const {
     return ss.str();
 }
 
-std::string DataPersistence::serializeTask(std::shared_ptr<Task> task) const {
+string DataPersistence::serializeTask(shared_ptr<Task> task) const {
     if (!task) return "";
     
-    std::stringstream ss;
+    stringstream ss;
     ss << "TASK|" << task->getId() << "|" 
        << task->getTitle() << "|" 
        << task->getDescription() << "|" 
@@ -105,10 +107,10 @@ std::string DataPersistence::serializeTask(std::shared_ptr<Task> task) const {
     return ss.str();
 }
 
-std::string DataPersistence::serializeBoard(std::shared_ptr<Board> board) const {
+string DataPersistence::serializeBoard(shared_ptr<Board> board) const {
     if (!board) return "";
     
-    std::stringstream ss;
+    stringstream ss;
     ss << "BOARD|" << board->getId() << "|" 
        << board->getName() << "|" 
        << board->getDescription();
@@ -131,10 +133,10 @@ std::string DataPersistence::serializeBoard(std::shared_ptr<Board> board) const 
     return ss.str();
 }
 
-std::string DataPersistence::serializeProject(std::shared_ptr<Project> project) const {
+string DataPersistence::serializeProject(shared_ptr<Project> project) const {
     if (!project) return "";
     
-    std::stringstream ss;
+    stringstream ss;
     ss << "PROJECT|" << project->getId() << "|" 
        << project->getName() << "|" 
        << project->getDescription() << "|" 
@@ -156,13 +158,13 @@ std::string DataPersistence::serializeProject(std::shared_ptr<Project> project) 
 }
 
 // Guardar
-bool DataPersistence::saveProject(std::shared_ptr<Project> project) {
+bool DataPersistence::saveProject(shared_ptr<Project> project) {
     if (!project) return false;
     
-    std::string filePath = getProjectFilePath(project->getId());
-    std::string json = serializeProject(project);
+    string filePath = getProjectFilePath(project->getId());
+    string json = serializeProject(project);
     
-    std::ofstream file(filePath);
+    ofstream file(filePath);
     if (!file.is_open()) {
         return false;
     }
@@ -173,7 +175,7 @@ bool DataPersistence::saveProject(std::shared_ptr<Project> project) {
     return true;
 }
 
-bool DataPersistence::saveAllProjects(std::shared_ptr<ProjectManager> manager) {
+bool DataPersistence::saveAllProjects(shared_ptr<ProjectManager> manager) {
     if (!manager) return false;
     
     const auto& projects = manager->getAllProjects();
@@ -188,12 +190,12 @@ bool DataPersistence::saveAllProjects(std::shared_ptr<ProjectManager> manager) {
 }
 
 bool DataPersistence::createBackup(int projectId) {
-    std::string originalPath = getProjectFilePath(projectId);
-    std::string backupPath = originalPath + ".backup";
+    string originalPath = getProjectFilePath(projectId);
+    string backupPath = originalPath + ".backup";
     
     try {
-        std::filesystem::copy_file(originalPath, backupPath, 
-                                  std::filesystem::copy_options::overwrite_existing);
+        filesystem::copy_file(originalPath, backupPath, 
+                                  filesystem::copy_options::overwrite_existing);
         return true;
     } catch (...) {
         return false;
@@ -201,49 +203,49 @@ bool DataPersistence::createBackup(int projectId) {
 }
 
 // Cargar desde archivo TXT
-std::shared_ptr<Project> DataPersistence::loadProject(int projectId) {
-    std::string filePath = getProjectFilePath(projectId);
+shared_ptr<Project> DataPersistence::loadProject(int projectId) {
+    string filePath = getProjectFilePath(projectId);
     
-    std::ifstream file(filePath);
+    ifstream file(filePath);
     if (!file.is_open()) {
         return nullptr;
     }
     
-    std::shared_ptr<Project> project = nullptr;
-    std::shared_ptr<Board> currentBoard = nullptr;
-    std::string line;
+    shared_ptr<Project> project = nullptr;
+    shared_ptr<Board> currentBoard = nullptr;
+    string line;
     
-    while (std::getline(file, line)) {
+    while (getline(file, line)) {
         if (line.empty()) continue;
         
-        std::stringstream ss(line);
-        std::string type;
-        std::getline(ss, type, '|');
+        stringstream ss(line);
+        string type;
+        getline(ss, type, '|');
         
         if (type == "PROJECT") {
-            std::string idStr, name, desc, date;
-            std::getline(ss, idStr, '|');
-            std::getline(ss, name, '|');
-            std::getline(ss, desc, '|');
-            std::getline(ss, date, '|');
+            string idStr, name, desc, date;
+            getline(ss, idStr, '|');
+            getline(ss, name, '|');
+            getline(ss, desc, '|');
+            getline(ss, date, '|');
             
-            project = std::make_shared<Project>(std::stoi(idStr), name, desc);
+            project = make_shared<Project>(stoi(idStr), name, desc);
         }
         else if (type == "USER" && project) {
-            std::string idStr, name, email, role;
-            std::getline(ss, idStr, '|');
-            std::getline(ss, name, '|');
-            std::getline(ss, email, '|');
-            std::getline(ss, role, '|');
+            string idStr, name, email, role;
+            getline(ss, idStr, '|');
+            getline(ss, name, '|');
+            getline(ss, email, '|');
+            getline(ss, role, '|');
             
             project->createUser(name, email, role);
         }
         else if (type == "BOARD" && project) {
-            std::string idStr, name, desc, statesStr;
-            std::getline(ss, idStr, '|');
-            std::getline(ss, name, '|');
-            std::getline(ss, desc, '|');
-            std::getline(ss, statesStr, '|');
+            string idStr, name, desc, statesStr;
+            getline(ss, idStr, '|');
+            getline(ss, name, '|');
+            getline(ss, desc, '|');
+            getline(ss, statesStr, '|');
             
             currentBoard = project->createBoard(name);
             currentBoard->setDescription(desc);
@@ -251,23 +253,23 @@ std::shared_ptr<Project> DataPersistence::loadProject(int projectId) {
             // Parsear estados si es necesario
         }
         else if (type == "TASK" && project && currentBoard) {
-            std::string idStr, title, desc, state, userIdStr, priorityStr, dueDate, createdDate, tagsStr, depsStr;
-            std::getline(ss, idStr, '|');
-            std::getline(ss, title, '|');
-            std::getline(ss, desc, '|');
-            std::getline(ss, state, '|');
-            std::getline(ss, userIdStr, '|');
-            std::getline(ss, priorityStr, '|');
-            std::getline(ss, dueDate, '|');
-            std::getline(ss, createdDate, '|');
-            std::getline(ss, tagsStr, '|');
-            std::getline(ss, depsStr, '|');
+            string idStr, title, desc, state, userIdStr, priorityStr, dueDate, createdDate, tagsStr, depsStr;
+            getline(ss, idStr, '|');
+            getline(ss, title, '|');
+            getline(ss, desc, '|');
+            getline(ss, state, '|');
+            getline(ss, userIdStr, '|');
+            getline(ss, priorityStr, '|');
+            getline(ss, dueDate, '|');
+            getline(ss, createdDate, '|');
+            getline(ss, tagsStr, '|');
+            getline(ss, depsStr, '|');
             
-            int taskId = std::stoi(idStr);
-            int userId = std::stoi(userIdStr);
-            int priority = std::stoi(priorityStr);
+            int taskId = stoi(idStr);
+            int userId = stoi(userIdStr);
+            int priority = stoi(priorityStr);
             
-            auto task = std::make_shared<Task>(taskId, title, desc);
+            auto task = make_shared<Task>(taskId, title, desc);
             task->setPriority(priority);
             if (userId >= 0) {
                 task->setAssignedUserId(userId, "System");
@@ -276,9 +278,9 @@ std::shared_ptr<Project> DataPersistence::loadProject(int projectId) {
             
             // Parsear tags
             if (!tagsStr.empty()) {
-                std::stringstream tagStream(tagsStr);
-                std::string tag;
-                while (std::getline(tagStream, tag, ',')) {
+                stringstream tagStream(tagsStr);
+                string tag;
+                while (getline(tagStream, tag, ',')) {
                     if (!tag.empty()) {
                         task->addTag(tag);
                     }
@@ -293,7 +295,7 @@ std::shared_ptr<Project> DataPersistence::loadProject(int projectId) {
     return project;
 }
 
-bool DataPersistence::loadAllProjects(std::shared_ptr<ProjectManager> manager) {
+bool DataPersistence::loadAllProjects(shared_ptr<ProjectManager> manager) {
     if (!manager) return false;
     
     auto projectIds = getAvailableProjectIds();
@@ -310,23 +312,23 @@ bool DataPersistence::loadAllProjects(std::shared_ptr<ProjectManager> manager) {
 
 // Eliminar
 bool DataPersistence::deleteProject(int projectId) {
-    std::string filePath = getProjectFilePath(projectId);
+    string filePath = getProjectFilePath(projectId);
     
     try {
-        return std::filesystem::remove(filePath);
+        return filesystem::remove(filePath);
     } catch (...) {
         return false;
     }
 }
 
 // Exportar/Importar
-bool DataPersistence::exportProjectToFile(std::shared_ptr<Project> project, 
-                                         const std::string& filePath) {
+bool DataPersistence::exportProjectToFile(shared_ptr<Project> project, 
+                                         const string& filePath) {
     if (!project) return false;
     
-    std::string json = serializeProject(project);
+    string json = serializeProject(project);
     
-    std::ofstream file(filePath);
+    ofstream file(filePath);
     if (!file.is_open()) {
         return false;
     }
@@ -337,8 +339,8 @@ bool DataPersistence::exportProjectToFile(std::shared_ptr<Project> project,
     return true;
 }
 
-std::shared_ptr<Project> DataPersistence::importProjectFromFile(const std::string& filePath) {
-    std::ifstream file(filePath);
+shared_ptr<Project> DataPersistence::importProjectFromFile(const string& filePath) {
+    ifstream file(filePath);
     if (!file.is_open()) {
         return nullptr;
     }
@@ -350,28 +352,28 @@ std::shared_ptr<Project> DataPersistence::importProjectFromFile(const std::strin
 }
 
 // Métodos de utilidad
-bool DataPersistence::directoryExists(const std::string& path) const {
-    return std::filesystem::exists(path) && std::filesystem::is_directory(path);
+bool DataPersistence::directoryExists(const string& path) const {
+    return filesystem::exists(path) && filesystem::is_directory(path);
 }
 
-bool DataPersistence::createDirectory(const std::string& path) const {
+bool DataPersistence::createDirectory(const string& path) const {
     try {
-        return std::filesystem::create_directories(path);
+        return filesystem::create_directories(path);
     } catch (...) {
         return false;
     }
 }
 
-std::vector<int> DataPersistence::getAvailableProjectIds() const {
-    std::vector<int> ids;
+vector<int> DataPersistence::getAvailableProjectIds() const {
+    vector<int> ids;
     
     try {
-        for (const auto& entry : std::filesystem::directory_iterator(dataDirectory)) {
+        for (const auto& entry : filesystem::directory_iterator(dataDirectory)) {
             if (entry.is_regular_file()) {
-                std::string filename = entry.path().filename().string();
-                if (filename.find("project_") == 0 && filename.find(".txt") != std::string::npos) {
-                    std::string idStr = filename.substr(8, filename.length() - 12);
-                    ids.push_back(std::stoi(idStr));
+                string filename = entry.path().filename().string();
+                if (filename.find("project_") == 0 && filename.find(".txt") != string::npos) {
+                    string idStr = filename.substr(8, filename.length() - 12);
+                    ids.push_back(stoi(idStr));
                 }
             }
         }
@@ -382,11 +384,11 @@ std::vector<int> DataPersistence::getAvailableProjectIds() const {
     return ids;
 }
 
-std::string DataPersistence::getProjectFilePath(int projectId) const {
-    return dataDirectory + "/project_" + std::to_string(projectId) + ".txt";
+string DataPersistence::getProjectFilePath(int projectId) const {
+    return dataDirectory + "/project_" + to_string(projectId) + ".txt";
 }
 
-std::string DataPersistence::getProjectsIndexPath() const {
+string DataPersistence::getProjectsIndexPath() const {
     return dataDirectory + "/projects_index.txt";
 }
 

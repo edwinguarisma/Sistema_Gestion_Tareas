@@ -6,16 +6,18 @@
 #include <QInputDialog>
 #include <QLabel>
 
-TaskDialog::TaskDialog(std::shared_ptr<Board> board,
-                      std::shared_ptr<Project> project,
-                      std::shared_ptr<Task> task,
+using namespace std;
+
+TaskDialog::TaskDialog(shared_ptr<Board> board,
+                      shared_ptr<Project> project,
+                      shared_ptr<Task> task,
                       QWidget *parent)
     : QDialog(parent), task(task), board(board), project(project),
       isNewTask(task == nullptr) {
     
     if (isNewTask && board) {
         // Crear nueva tarea
-        this->task = std::make_shared<Task>(0, "", "");
+        this->task = make_shared<Task>(0, "", "");
     }
     
     setupUI();
@@ -30,6 +32,72 @@ TaskDialog::~TaskDialog() {}
 void TaskDialog::setupUI() {
     setWindowTitle(isNewTask ? "Nueva Tarea" : "Editar Tarea");
     setMinimumSize(700, 600);
+    
+    // Establecer estilo claro para el diálogo
+    setStyleSheet(
+        "QDialog {"
+        "  background-color: #ffffff;"
+        "}"
+        "QLabel {"
+        "  color: #1a1a1a;"
+        "}"
+        "QLineEdit, QTextEdit, QComboBox, QSpinBox, QDateTimeEdit {"
+        "  background-color: #ffffff;"
+        "  color: #1a1a1a;"
+        "  border: 1px solid #d0d0d0;"
+        "  border-radius: 4px;"
+        "  padding: 6px;"
+        "}"
+        "QLineEdit:focus, QTextEdit:focus, QComboBox:focus {"
+        "  border: 2px solid #0078d4;"
+        "}"
+        "QListWidget {"
+        "  background-color: #ffffff;"
+        "  color: #1a1a1a;"
+        "  border: 1px solid #d0d0d0;"
+        "  border-radius: 4px;"
+        "}"
+        "QTextBrowser {"
+        "  background-color: #fafafa;"
+        "  color: #1a1a1a;"
+        "  border: 1px solid #d0d0d0;"
+        "  border-radius: 4px;"
+        "}"
+        "QPushButton {"
+        "  background-color: #f0f0f0;"
+        "  color: #1a1a1a;"
+        "  border: 1px solid #d0d0d0;"
+        "  border-radius: 4px;"
+        "  padding: 8px 16px;"
+        "  font-weight: 500;"
+        "}"
+        "QPushButton:hover {"
+        "  background-color: #e5e5e5;"
+        "  border: 1px solid #b0b0b0;"
+        "}"
+        "QPushButton:pressed {"
+        "  background-color: #d0d0d0;"
+        "}"
+        "QTabWidget::pane {"
+        "  background-color: #ffffff;"
+        "  border: 1px solid #d0d0d0;"
+        "  border-radius: 4px;"
+        "}"
+        "QTabBar::tab {"
+        "  background-color: #f0f0f0;"
+        "  color: #4a4a4a;"
+        "  padding: 8px 16px;"
+        "  border: 1px solid #d0d0d0;"
+        "  border-bottom: none;"
+        "  border-top-left-radius: 4px;"
+        "  border-top-right-radius: 4px;"
+        "}"
+        "QTabBar::tab:selected {"
+        "  background-color: #ffffff;"
+        "  color: #1a1a1a;"
+        "  font-weight: bold;"
+        "}"
+    );
     
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     
@@ -207,7 +275,7 @@ void TaskDialog::loadTaskData() {
     }
     
     auto dueDate = task->getDueDate();
-    std::time_t time = std::chrono::system_clock::to_time_t(dueDate);
+    time_t time = chrono::system_clock::to_time_t(dueDate);
     dueDateEdit->setDateTime(QDateTime::fromSecsSinceEpoch(time));
     
     prioritySpinBox->setValue(task->getPriority());
@@ -325,8 +393,8 @@ void TaskDialog::onSave() {
     int userId = userCombo->currentData().toInt();
     task->setAssignedUserId(userId, "Usuario Actual");
     
-    std::time_t time = dueDateEdit->dateTime().toSecsSinceEpoch();
-    task->setDueDate(std::chrono::system_clock::from_time_t(time));
+    time_t time = dueDateEdit->dateTime().toSecsSinceEpoch();
+    task->setDueDate(chrono::system_clock::from_time_t(time));
     
     task->setPriority(prioritySpinBox->value());
     
@@ -360,7 +428,7 @@ void TaskDialog::onAddSubtask() {
                                          QLineEdit::Normal, "", &ok);
     if (ok && !title.isEmpty()) {
         // Agregar subtarea
-        auto subtask = std::make_shared<Subtask>(0, title.toStdString());
+        auto subtask = make_shared<Subtask>(0, title.toStdString());
         task->addSubtask(subtask);
         loadSubtasks();
     }
@@ -420,7 +488,7 @@ void TaskDialog::onRestoreVersion() {
     }
 }
 
-std::shared_ptr<Task> TaskDialog::getTask() const {
+shared_ptr<Task> TaskDialog::getTask() const {
     return task;
 }
 

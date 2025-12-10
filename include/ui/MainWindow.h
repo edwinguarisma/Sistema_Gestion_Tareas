@@ -15,6 +15,8 @@
 #include "utils/DataPersistence.h"
 #include "BoardWidget.h"
 
+using namespace std;
+
 /**
  * @brief Ventana principal de la aplicación
  */
@@ -23,9 +25,9 @@ class MainWindow : public QMainWindow {
 
 private:
     // Managers
-    std::shared_ptr<ProjectManager> projectManager;
-    std::shared_ptr<NotificationManager> notificationManager;
-    std::shared_ptr<DataPersistence> dataPersistence;
+    shared_ptr<ProjectManager> projectManager;
+    shared_ptr<NotificationManager> notificationManager;
+    shared_ptr<DataPersistence> dataPersistence;
     
     // UI Components
     QTabWidget* tabWidget;
@@ -39,11 +41,11 @@ private:
     QTimer* autoSaveTimer;
     
     // Widgets de tableros actuales
-    std::map<int, BoardWidget*> boardWidgets;
+    map<int, BoardWidget*> boardWidgets;
     
     // Usuario actual (simulado)
     int currentUserId;
-    std::string currentUserName;
+    string currentUserName;
     
     void setupUI();
     void createMenus();
@@ -78,8 +80,8 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     
-    void setCurrentUser(int userId, const std::string& userName);
-    void loadProject(std::shared_ptr<Project> project);
+    void setCurrentUser(int userId, const string& userName);
+    void loadProject(shared_ptr<Project> project);
     void refreshCurrentView();
     
 protected:

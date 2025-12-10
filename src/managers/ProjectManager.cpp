@@ -3,8 +3,10 @@
 #include <functional>
 #include <set>
 
+using namespace std;
+
 // Inicializar el singleton
-std::shared_ptr<ProjectManager> ProjectManager::instance = nullptr;
+shared_ptr<ProjectManager> ProjectManager::instance = nullptr;
 
 // Constructor
 ProjectManager::ProjectManager() : nextProjectId(1) {}
@@ -13,17 +15,17 @@ ProjectManager::ProjectManager() : nextProjectId(1) {}
 ProjectManager::~ProjectManager() {}
 
 // Singleton
-std::shared_ptr<ProjectManager> ProjectManager::getInstance() {
+shared_ptr<ProjectManager> ProjectManager::getInstance() {
     if (!instance) {
-        instance = std::shared_ptr<ProjectManager>(new ProjectManager());
+        instance = shared_ptr<ProjectManager>(new ProjectManager());
     }
     return instance;
 }
 
 // Gestión de proyectos
-std::shared_ptr<Project> ProjectManager::createProject(const std::string& name,
-                                                        const std::string& description) {
-    auto project = std::make_shared<Project>(nextProjectId++, name, description);
+shared_ptr<Project> ProjectManager::createProject(const string& name,
+                                                        const string& description) {
+    auto project = make_shared<Project>(nextProjectId++, name, description);
     projects.push_back(project);
     
     // Si es el primer proyecto, establecerlo como actual
@@ -34,7 +36,7 @@ std::shared_ptr<Project> ProjectManager::createProject(const std::string& name,
     return project;
 }
 
-void ProjectManager::addProject(std::shared_ptr<Project> project) {
+void ProjectManager::addProject(shared_ptr<Project> project) {
     if (project) {
         projects.push_back(project);
         
@@ -46,8 +48,8 @@ void ProjectManager::addProject(std::shared_ptr<Project> project) {
 
 void ProjectManager::removeProject(int projectId) {
     projects.erase(
-        std::remove_if(projects.begin(), projects.end(),
-            [projectId](const std::shared_ptr<Project>& p) {
+        remove_if(projects.begin(), projects.end(),
+            [projectId](const shared_ptr<Project>& p) {
                 return p->getId() == projectId;
             }),
         projects.end()
@@ -59,7 +61,7 @@ void ProjectManager::removeProject(int projectId) {
     }
 }
 
-std::shared_ptr<Project> ProjectManager::findProjectById(int id) const {
+shared_ptr<Project> ProjectManager::findProjectById(int id) const {
     for (const auto& project : projects) {
         if (project->getId() == id) {
             return project;
@@ -68,33 +70,33 @@ std::shared_ptr<Project> ProjectManager::findProjectById(int id) const {
     return nullptr;
 }
 
-const std::vector<std::shared_ptr<Project>>& ProjectManager::getAllProjects() const {
+const vector<shared_ptr<Project>>& ProjectManager::getAllProjects() const {
     return projects;
 }
 
 // Proyecto actual
-void ProjectManager::setCurrentProject(std::shared_ptr<Project> project) {
+void ProjectManager::setCurrentProject(shared_ptr<Project> project) {
     if (project) {
         currentProject = project;
     }
 }
 
-std::shared_ptr<Project> ProjectManager::getCurrentProject() const {
+shared_ptr<Project> ProjectManager::getCurrentProject() const {
     return currentProject;
 }
 
 // Validaciones de dependencias circulares
 bool ProjectManager::hasCircularDependency(int taskId, int dependencyId,
-                                          std::shared_ptr<Board> board) const {
+                                          shared_ptr<Board> board) const {
     if (!board || taskId == dependencyId) {
         return true;  // Una tarea no puede depender de sí misma
     }
     
     // Realizar búsqueda en profundidad para detectar ciclos
-    std::set<int> visited;
-    std::set<int> recursionStack;
+    set<int> visited;
+    set<int> recursionStack;
     
-    std::function<bool(int)> detectCycle = [&](int currentId) -> bool {
+    function<bool(int)> detectCycle = [&](int currentId) -> bool {
         if (recursionStack.find(currentId) != recursionStack.end()) {
             return true;  // Ciclo detectado
         }
@@ -137,7 +139,7 @@ bool ProjectManager::hasCircularDependency(int taskId, int dependencyId,
 }
 
 bool ProjectManager::canAddDependency(int taskId, int dependencyId,
-                                      std::shared_ptr<Board> board) const {
+                                      shared_ptr<Board> board) const {
     if (!board) {
         return false;
     }
@@ -162,7 +164,7 @@ bool ProjectManager::canAddDependency(int taskId, int dependencyId,
 }
 
 // Búsqueda global
-std::shared_ptr<Task> ProjectManager::findTaskGlobally(int taskId) const {
+shared_ptr<Task> ProjectManager::findTaskGlobally(int taskId) const {
     for (const auto& project : projects) {
         auto task = project->findTaskById(taskId);
         if (task) {
@@ -172,8 +174,8 @@ std::shared_ptr<Task> ProjectManager::findTaskGlobally(int taskId) const {
     return nullptr;
 }
 
-std::vector<std::shared_ptr<Task>> ProjectManager::findTasksByUserGlobally(int userId) const {
-    std::vector<std::shared_ptr<Task>> result;
+vector<shared_ptr<Task>> ProjectManager::findTasksByUserGlobally(int userId) const {
+    vector<shared_ptr<Task>> result;
     
     for (const auto& project : projects) {
         auto tasks = project->findTasksByUser(userId);

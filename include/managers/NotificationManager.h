@@ -9,6 +9,8 @@
 #include "models/Task.h"
 #include "models/Project.h"
 
+using namespace std;
+
 /**
  * @brief Estructura que representa una notificación
  */
@@ -23,18 +25,18 @@ struct Notification {
     };
     
     Type type;
-    std::string title;
-    std::string message;
+    string title;
+    string message;
     int taskId;
     int userId;  // Usuario al que va dirigida
-    std::chrono::system_clock::time_point timestamp;
+    chrono::system_clock::time_point timestamp;
     bool read;
     
-    Notification(Type type, const std::string& title, const std::string& message,
+    Notification(Type type, const string& title, const string& message,
                 int taskId = -1, int userId = -1);
     
-    std::string getTypeString() const;
-    std::string toString() const;
+    string getTypeString() const;
+    string toString() const;
 };
 
 /**
@@ -43,11 +45,11 @@ struct Notification {
  */
 class NotificationManager {
 private:
-    std::vector<Notification> notifications;
-    std::function<void(const Notification&)> notificationCallback;
+    vector<Notification> notifications;
+    function<void(const Notification&)> notificationCallback;
     
     // Para verificar tareas próximas a vencer
-    std::chrono::system_clock::time_point lastCheck;
+    chrono::system_clock::time_point lastCheck;
 
 public:
     // Constructor
@@ -57,23 +59,23 @@ public:
     ~NotificationManager();
     
     // Configurar callback para notificaciones
-    void setNotificationCallback(std::function<void(const Notification&)> callback);
+    void setNotificationCallback(function<void(const Notification&)> callback);
     
     // Agregar notificaciones
     void addNotification(const Notification& notification);
-    void notifyTaskDueSoon(std::shared_ptr<Task> task, int userId);
-    void notifyTaskOverdue(std::shared_ptr<Task> task, int userId);
-    void notifyDependencyResolved(std::shared_ptr<Task> task, int userId);
-    void notifyTaskAssigned(std::shared_ptr<Task> task, int userId);
-    void notifyTaskMoved(std::shared_ptr<Task> task, const std::string& newState, int userId);
-    void notifyTaskCompleted(std::shared_ptr<Task> task, int userId);
+    void notifyTaskDueSoon(shared_ptr<Task> task, int userId);
+    void notifyTaskOverdue(shared_ptr<Task> task, int userId);
+    void notifyDependencyResolved(shared_ptr<Task> task, int userId);
+    void notifyTaskAssigned(shared_ptr<Task> task, int userId);
+    void notifyTaskMoved(shared_ptr<Task> task, const string& newState, int userId);
+    void notifyTaskCompleted(shared_ptr<Task> task, int userId);
     
     // Verificar tareas próximas a vencer en un proyecto
-    void checkDueDates(std::shared_ptr<Project> project);
+    void checkDueDates(shared_ptr<Project> project);
     
     // Consultas
-    std::vector<Notification> getNotificationsByUser(int userId) const;
-    std::vector<Notification> getUnreadNotifications(int userId) const;
+    vector<Notification> getNotificationsByUser(int userId) const;
+    vector<Notification> getUnreadNotifications(int userId) const;
     int getUnreadCount(int userId) const;
     
     // Marcar como leída
@@ -86,7 +88,7 @@ public:
     
     // Métodos de utilidad
     size_t getNotificationCount() const;
-    const std::vector<Notification>& getAllNotifications() const;
+    const vector<Notification>& getAllNotifications() const;
 };
 
 #endif // NOTIFICATION_MANAGER_H

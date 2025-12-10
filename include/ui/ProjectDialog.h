@@ -9,6 +9,8 @@
 #include <memory>
 #include "models/Project.h"
 
+using namespace std;
+
 /**
  * @brief Diálogo para crear/editar proyectos
  */
@@ -16,7 +18,7 @@ class ProjectDialog : public QDialog {
     Q_OBJECT
 
 private:
-    std::shared_ptr<Project> project;
+    shared_ptr<Project> project;
     bool isNewProject;
     bool accepted;
     
@@ -34,11 +36,11 @@ private slots:
     void validateInput();
 
 public:
-    explicit ProjectDialog(std::shared_ptr<Project> project = nullptr,
+    explicit ProjectDialog(shared_ptr<Project> project = nullptr,
                           QWidget *parent = nullptr);
     ~ProjectDialog();
     
-    std::shared_ptr<Project> getProject() const;
+    shared_ptr<Project> getProject() const;
     bool wasAccepted() const;
     
     QString getName() const;

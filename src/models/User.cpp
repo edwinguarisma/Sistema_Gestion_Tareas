@@ -1,10 +1,12 @@
 #include "models/User.h"
 #include <sstream>
 
+using namespace std;
+
 // Constructores
 User::User() : id(-1), name(""), email(""), role("developer") {}
 
-User::User(int id, const std::string& name, const std::string& email, const std::string& role)
+User::User(int id, const string& name, const string& email, const string& role)
     : id(id), name(name), email(email), role(role) {}
 
 // Destructor
@@ -15,34 +17,34 @@ int User::getId() const {
     return id;
 }
 
-std::string User::getName() const {
+string User::getName() const {
     return name;
 }
 
-std::string User::getEmail() const {
+string User::getEmail() const {
     return email;
 }
 
-std::string User::getRole() const {
+string User::getRole() const {
     return role;
 }
 
 // Setters
-void User::setName(const std::string& name) {
+void User::setName(const string& name) {
     this->name = name;
 }
 
-void User::setEmail(const std::string& email) {
+void User::setEmail(const string& email) {
     this->email = email;
 }
 
-void User::setRole(const std::string& role) {
+void User::setRole(const string& role) {
     this->role = role;
 }
 
 // Métodos de utilidad
-std::string User::toString() const {
-    std::stringstream ss;
+string User::toString() const {
+    stringstream ss;
     ss << "User[ID: " << id << ", Name: " << name 
        << ", Email: " << email << ", Role: " << role << "]";
     return ss.str();

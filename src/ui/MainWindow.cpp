@@ -9,13 +9,15 @@
 #include <QFileDialog>
 #include <QInputDialog>
 
+using namespace std;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), currentUserId(1), currentUserName("Usuario Principal") {
     
     // Inicializar managers
     projectManager = ProjectManager::getInstance();
-    notificationManager = std::make_shared<NotificationManager>();
-    dataPersistence = std::make_shared<DataPersistence>("data");
+    notificationManager = make_shared<NotificationManager>();
+    dataPersistence = make_shared<DataPersistence>("data");
     
     setupUI();
     createMenus();
@@ -31,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     
     // Intentar cargar proyecto guardado
     auto projectIds = dataPersistence->getAvailableProjectIds();
-    std::shared_ptr<Project> project = nullptr;
+    shared_ptr<Project> project = nullptr;
     
     if (!projectIds.empty()) {
         // Cargar el primer proyecto encontrado
@@ -65,60 +67,97 @@ void MainWindow::setupUI() {
     setWindowTitle("Sistema de Gestión de Tareas y Proyectos");
     setMinimumSize(1280, 850);
     
-    // Widget central con pestañas estilo Trello
+    // Establecer estilo global para la aplicación
+    setStyleSheet(
+        "QMainWindow {"
+        "  background-color: #fafafa;"
+        "}"
+        "QMenuBar {"
+        "  background-color: #ffffff;"
+        "  color: #1a1a1a;"
+        "  border-bottom: 1px solid #e5e5e5;"
+        "  padding: 4px;"
+        "}"
+        "QMenuBar::item {"
+        "  background-color: transparent;"
+        "  color: #1a1a1a;"
+        "  padding: 8px 12px;"
+        "  border-radius: 4px;"
+        "}"
+        "QMenuBar::item:selected {"
+        "  background-color: #e5e5e5;"
+        "}"
+        "QMenu {"
+        "  background-color: #ffffff;"
+        "  color: #1a1a1a;"
+        "  border: 1px solid #d0d0d0;"
+        "  border-radius: 4px;"
+        "}"
+        "QMenu::item {"
+        "  padding: 8px 30px 8px 20px;"
+        "  background-color: transparent;"
+        "}"
+        "QMenu::item:selected {"
+        "  background-color: #e5e5e5;"
+        "}"
+    );
+    
+    // Widget central con pestañas minimalistas
     tabWidget = new QTabWidget(this);
     tabWidget->setTabsClosable(false);
     tabWidget->setMovable(true);
     tabWidget->setStyleSheet(
         "QTabWidget::pane {"
         "  border: none;"
-        "  background: #f4f5f7;"
+        "  background: #ffffff;"
         "}"
         "QTabBar::tab {"
-        "  background: transparent;"
-        "  color: #5e6c84;"
-        "  padding: 10px 16px;"
-        "  margin-right: 2px;"
+        "  background: #f7f8fa;"
+        "  color: #4a4a4a;"
+        "  padding: 12px 20px;"
+        "  margin-right: 4px;"
         "  border: none;"
-        "  font-size: 10pt;"
+        "  border-top-left-radius: 6px;"
+        "  border-top-right-radius: 6px;"
+        "  font-size: 11pt;"
         "}"
         "QTabBar::tab:selected {"
         "  background: #ffffff;"
-        "  color: #172b4d;"
-        "  border-bottom: 2px solid #0079bf;"
+        "  color: #1a1a1a;"
         "  font-weight: bold;"
         "}"
         "QTabBar::tab:hover {"
-        "  background: #ebecf0;"
-        "  color: #172b4d;"
+        "  background: #e5e5e5;"
+        "  color: #1a1a1a;"
         "}"
     );
     
     setCentralWidget(tabWidget);
     
-    // Barra de estado estilo Trello
+    // Barra de estado minimalista
     statusBar = new QStatusBar(this);
     statusBar->setStyleSheet(
         "QStatusBar {"
-        "  background: #fafbfc;"
-        "  color: #5e6c84;"
-        "  padding: 6px;"
-        "  border-top: 1px solid #dfe1e6;"
+        "  background: #ffffff;"
+        "  color: #4a4a4a;"
+        "  padding: 8px;"
+        "  border-top: 1px solid #e5e5e5;"
         "}"
     );
     setStatusBar(statusBar);
     
     statusLabel = new QLabel("Listo");
-    statusLabel->setStyleSheet("color: #5e6c84; padding: 4px; font-size: 9pt;");
+    statusLabel->setStyleSheet("color: #4a4a4a; padding: 4px; font-size: 10pt;");
     statusBar->addWidget(statusLabel);
     
     notificationLabel = new QLabel("🔔 0");
     notificationLabel->setStyleSheet(
-        "background-color: #eb5a46; "
+        "background-color: #E53935; "
         "color: white; "
-        "padding: 3px 8px; "
-        "border-radius: 3px; "
-        "font-size: 9pt;"
+        "padding: 4px 10px; "
+        "border-radius: 12px; "
+        "font-size: 9pt; "
+        "font-weight: bold;"
     );
     statusBar->addPermanentWidget(notificationLabel);
 }
@@ -194,24 +233,26 @@ void MainWindow::createToolBar() {
     toolBar->setIconSize(QSize(24, 24));
     toolBar->setStyleSheet(
         "QToolBar {"
-        "  background: #0079bf;"
+        "  background: #ffffff;"
         "  border: none;"
-        "  padding: 6px 12px;"
-        "  spacing: 8px;"
+        "  border-bottom: 1px solid #e5e5e5;"
+        "  padding: 8px 16px;"
+        "  spacing: 12px;"
         "}"
         "QToolButton {"
-        "  background: rgba(255, 255, 255, 0.3);"
+        "  background: #0078d4;"
         "  color: white;"
         "  border: none;"
-        "  border-radius: 3px;"
-        "  padding: 6px 12px;"
+        "  border-radius: 6px;"
+        "  padding: 8px 16px;"
         "  font-size: 10pt;"
+        "  font-weight: 500;"
         "}"
         "QToolButton:hover {"
-        "  background: rgba(255, 255, 255, 0.4);"
+        "  background: #106ebe;"
         "}"
         "QToolButton:pressed {"
-        "  background: rgba(0, 0, 0, 0.1);"
+        "  background: #005a9e;"
         "}"
     );
     addToolBar(toolBar);
@@ -375,7 +416,7 @@ void MainWindow::onNewBoard() {
                 });
         
         connect(boardWidget, &BoardWidget::newTaskRequested,
-                [this, board, project](const std::string& state) {
+                [this, board, project](const string& state) {
                     TaskDialog dialog(board, project, nullptr, this);
                     if (dialog.exec() == QDialog::Accepted) {
                         auto task = dialog.getTask();
@@ -557,12 +598,12 @@ void MainWindow::onTabChanged(int index) {
     }
 }
 
-void MainWindow::setCurrentUser(int userId, const std::string& userName) {
+void MainWindow::setCurrentUser(int userId, const string& userName) {
     currentUserId = userId;
     currentUserName = userName;
 }
 
-void MainWindow::loadProject(std::shared_ptr<Project> project) {
+void MainWindow::loadProject(shared_ptr<Project> project) {
     if (!project) return;
     
     projectManager->setCurrentProject(project);
@@ -590,7 +631,7 @@ void MainWindow::loadProject(std::shared_ptr<Project> project) {
                 });
         
         connect(boardWidget, &BoardWidget::newTaskRequested,
-                [this, board, project](const std::string& state) {
+                [this, board, project](const string& state) {
                     TaskDialog dialog(board, project, nullptr, this);
                     if (dialog.exec() == QDialog::Accepted) {
                         auto task = dialog.getTask();

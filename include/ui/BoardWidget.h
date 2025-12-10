@@ -15,6 +15,8 @@
 #include "TaskCard.h"
 #include "ColumnWidget.h"
 
+using namespace std;
+
 /**
  * @brief Widget que muestra un tablero Kanban
  */
@@ -22,8 +24,8 @@ class BoardWidget : public QWidget {
     Q_OBJECT
 
 private:
-    std::shared_ptr<Board> board;
-    std::string currentUserName;
+    shared_ptr<Board> board;
+    string currentUserName;
     
     QVBoxLayout* mainLayout;
     QScrollArea* scrollArea;
@@ -31,36 +33,36 @@ private:
     QHBoxLayout* columnsLayout;
     
     // Mapa de columnas por estado
-    std::map<std::string, ColumnWidget*> stateColumns;
+    map<string, ColumnWidget*> stateColumns;
     
     // Mapa de tarjetas de tareas
-    std::map<int, TaskCard*> taskCards;
+    map<int, TaskCard*> taskCards;
     
     void setupUI();
     void createColumns();
     void populateTasks();
     
 private slots:
-    void onAddTaskClicked(const std::string& state);
+    void onAddTaskClicked(const string& state);
     void onTaskCardClicked(int taskId);
-    void onTaskCardMoved(int taskId, const std::string& newState);
+    void onTaskCardMoved(int taskId, const string& newState);
     void onRefresh();
 
 signals:
     void taskSelected(int taskId);
-    void taskMoved(int taskId, const std::string& newState);
-    void newTaskRequested(const std::string& state);
+    void taskMoved(int taskId, const string& newState);
+    void newTaskRequested(const string& state);
 
 public:
-    explicit BoardWidget(std::shared_ptr<Board> board, 
-                        const std::string& currentUserName,
+    explicit BoardWidget(shared_ptr<Board> board, 
+                        const string& currentUserName,
                         QWidget *parent = nullptr);
     ~BoardWidget();
     
-    std::shared_ptr<Board> getBoard() const;
+    shared_ptr<Board> getBoard() const;
     void refresh();
-    void addTask(std::shared_ptr<Task> task);
-    void updateTask(std::shared_ptr<Task> task);
+    void addTask(shared_ptr<Task> task);
+    void updateTask(shared_ptr<Task> task);
     void removeTask(int taskId);
 };
 
